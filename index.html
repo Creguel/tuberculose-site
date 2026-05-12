@@ -511,16 +511,34 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
     </div>
 
     <div class="daly-bar fade-up">
-      <h3>122 milhões de DALYs em 2019</h3>
-      <div class="bar-label">64 milhões — doença ativa</div>
+      <h3>O que são DALYs?</h3>
+      <p style="font-size:14px;font-weight:600;color:var(--taupe);opacity:.8;line-height:1.6;margin-bottom:20px">Os DALYs (Disability-Adjusted Life Years) medem o impacto total de uma doença numa população. São a soma de duas componentes: <strong>YLL</strong> — anos de vida perdidos por morte prematura — e <strong>YLD</strong> — anos vividos com incapacidade. Permitem comparar doenças diferentes e definir prioridades em saúde pública.</p>
+      <h3 style="margin-bottom:12px">122 milhões de DALYs atribuídos à TB em 2019</h3>
+      <div class="bar-label">64 milhões — doença ativa (YLL)</div>
       <div class="bar-container">
         <div class="bar-fill pink" id="bar1" style="width:0%" data-width="52%">64M DALYs</div>
       </div>
-      <div class="bar-label">58 milhões — sequelas pós-tuberculose</div>
+      <div class="bar-label">58 milhões — sequelas pós-tuberculose (YLD)</div>
       <div class="bar-container">
         <div class="bar-fill blue" id="bar2" style="width:0%" data-width="47%">58M DALYs</div>
       </div>
-      <p style="font-size:12px;color:var(--taupe);opacity:.6;margin-top:10px;font-weight:600">DALY = Disability-Adjusted Life Year (ano de vida ajustado por incapacidade)</p>
+    </div>
+
+    <div class="daly-bar fade-up" style="margin-top:20px;background:linear-gradient(135deg,#e8f8ff,#d0f0ff)">
+      <h3 style="color:var(--blue);margin-bottom:6px">~3 mil milhões de DALYs evitados desde 2000</h3>
+      <p style="font-size:14px;font-weight:600;color:var(--taupe);opacity:.8;line-height:1.6;margin-bottom:20px">Com 80% de cobertura vacinal global, o cálculo com base nas 83 milhões de vidas salvas mostra o impacto real da vacinação:</p>
+      <div class="bar-label">YLL evitados — 83M vidas × 30 anos por vida = 2,49 mil milhões de anos</div>
+      <div class="bar-container">
+        <div class="bar-fill blue" id="bar3" style="width:0%" data-width="83%">2,49 mil milhões</div>
+      </div>
+      <div class="bar-label">YLD evitados — sequelas e incapacidades (20% dos YLL) = 0,50 mil milhões de anos</div>
+      <div class="bar-container">
+        <div class="bar-fill pink" id="bar4" style="width:0%" data-width="17%">0,50 mil milhões</div>
+      </div>
+      <div style="margin-top:16px;background:var(--blue);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:12px">
+        <div style="font-family:'Fredoka One',cursive;font-size:36px;color:#fff;white-space:nowrap">= 2,99 mil milhões</div>
+        <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.9);line-height:1.5">de anos de vida saudável ganhos graças ao controlo global da tuberculose desde 2000</div>
+      </div>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px" class="fade-up">
@@ -878,7 +896,7 @@ const observer = new IntersectionObserver((entries)=>{
     if(e.isIntersecting){
       e.target.classList.add('visible');
       // barras de progresso
-      if(e.target.id==='bar1'||e.target.id==='bar2'){
+      if(e.target.id==='bar1'||e.target.id==='bar2'||e.target.id==='bar3'||e.target.id==='bar4'){
         e.target.style.width=e.target.dataset.width;
       }
     }
@@ -934,6 +952,10 @@ const searchData = [
   {title:'Novas vacinas contra a tuberculose',section:'vacina',tag:'A vacina BCG',color:'blue',
    text:'M72 AS01E é uma vacina subunitária que usa proteínas de Mycobacterium tuberculosis. VPM1002 e MTBVAC são candidatos em fases avançadas de investigação clínica com potencial para substituir ou complementar a BCG.'},
   // NÚMEROS
+  {title:'DALYs evitados pela vacinação BCG',section:'numeros',tag:'Números',color:'pink',
+   text:'Desde 2000 com 80% de cobertura vacinal foram evitados aproximadamente 3 mil milhões de DALYs. Cálculo: 83 milhões de vidas salvas multiplicado por 30 anos equals 2,49 mil milhões de YLL. Somando 20% de YLD equals 0,50 mil milhões. Total 2,99 mil milhões de anos de vida saudável ganhos.'},
+  {title:'O que são DALYs — definição',section:'numeros',tag:'Números',color:'pink',
+   text:'DALYs Disability-Adjusted Life Years medem o impacto total de uma doença numa população. São a soma de YLL anos de vida perdidos por morte prematura e YLD anos vividos com incapacidade. Permitem comparar doenças e definir prioridades em saúde pública.'},
   {title:'Mortes por tuberculose em 2024',section:'numeros',tag:'Números',color:'pink',
    text:'Em 2024 a tuberculose foi a doença infeciosa com maior mortalidade global a par com o VIH com 1,23 milhões de mortes estimadas nesse ano pela Organização Mundial de Saúde.'},
   {title:'Vidas salvas pela luta contra a TB',section:'numeros',tag:'Números',color:'pink',
