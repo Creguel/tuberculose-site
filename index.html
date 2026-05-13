@@ -4,78 +4,105 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TB — A verdade que ninguém te conta</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700;800;900&family=Work+Sans:wght@400;500;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
 :root{
-  --pink:#f63c67;
-  --blue:#0ab1ff;
-  --cream:#fffae3;
-  --taupe:#5d576b;
-  --white:#fcfcfc;
-  --pink-light:#fff0f4;
-  --blue-light:#e8f8ff;
-  --shadow:0 8px 32px rgba(93,87,107,0.10);
-  --shadow-sm:0 2px 12px rgba(93,87,107,0.08);
-  --radius:20px;
-  --radius-sm:12px;
+  --pink:#f63c67;--blue:#0ab1ff;--cream:#fffae3;--taupe:#5d576b;
+  --white:#fcfcfc;--pink-light:#fff0f4;--blue-light:#e8f8ff;--green:#00c896;
+  --shadow:0 8px 32px rgba(93,87,107,.10);--shadow-sm:0 2px 12px rgba(93,87,107,.08);
+  --radius:20px;--radius-sm:12px;
+  --font-title:'Open Sans',sans-serif;
+  --font-body:'Work Sans',sans-serif;
+  --font-brand:'Fredoka One',cursive;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--taupe);overflow-x:hidden}
-h1,h2,h3,.display{font-family:'Fredoka One',cursive;letter-spacing:0.01em}
+body{font-family:var(--font-body);background:var(--white);color:var(--taupe);overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--font-title)}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(252,252,252,0.92);backdrop-filter:blur(12px);border-bottom:1.5px solid rgba(246,60,103,0.08);padding:0 5vw}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;gap:8px;max-width:1200px;margin:0 auto}
-.logo{font-family:'Fredoka One',cursive;font-size:22px;color:var(--pink);white-space:nowrap}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(252,252,252,.92);backdrop-filter:blur(12px);border-bottom:1.5px solid rgba(246,60,103,.08);padding:0 5vw}
+.nav-inner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;height:64px;max-width:1200px;margin:0 auto;gap:8px}
+.logo{font-family:var(--font-brand);font-size:22px;color:var(--pink);white-space:nowrap}
 .logo span{color:var(--taupe)}
-.nav-links{display:flex;gap:4px;list-style:none}
-.nav-links a{font-size:13px;font-weight:700;color:var(--taupe);text-decoration:none;padding:7px 13px;border-radius:50px;transition:all .2s}
+.nav-links{display:flex;gap:4px;list-style:none;justify-content:center}
+.nav-links a{font-size:13px;font-weight:700;font-family:var(--font-body);color:var(--taupe);text-decoration:none;padding:7px 13px;border-radius:50px;transition:all .2s}
 .nav-links a:hover{background:var(--pink-light);color:var(--pink)}
 .nav-links a.active{background:var(--pink);color:#fff}
-.nav-cta{background:var(--pink);color:#fff;border:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;padding:10px 20px;border-radius:50px;cursor:pointer;white-space:nowrap;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 16px rgba(246,60,103,0.3)}
-.nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(246,60,103,0.4)}
+.nav-right{display:flex;align-items:center;justify-content:flex-end}
+.nav-cta{background:var(--pink);color:#fff;border:none;font-family:var(--font-body);font-weight:700;font-size:13px;padding:10px 20px;border-radius:50px;cursor:pointer;white-space:nowrap;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 16px rgba(246,60,103,.3)}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(246,60,103,.4)}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
 .hamburger span{display:block;width:22px;height:2px;background:var(--taupe);border-radius:2px;transition:all .2s}
 
+/* ASSISTIVETOUCH SEARCH BUTTON */
+.assistive-search{position:fixed;width:54px;height:54px;border-radius:50%;background:rgba(246,60,103,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:grab;z-index:150;box-shadow:0 4px 20px rgba(246,60,103,.45);touch-action:none;user-select:none;right:24px;bottom:90px;transition:box-shadow .2s;transform-origin:center center}
+.assistive-search:hover{box-shadow:0 6px 28px rgba(246,60,103,.6)}
+.assistive-search:active{cursor:grabbing}
+.assistive-search svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+
+/* SEARCH OVERLAY */
+.search-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(93,87,107,.5);backdrop-filter:blur(6px);padding:80px 20px 20px;align-items:flex-start;justify-content:center}
+.search-overlay.open{display:flex}
+.search-box{background:var(--white);border-radius:24px;width:100%;max-width:680px;box-shadow:0 24px 64px rgba(0,0,0,.18);overflow:hidden}
+.search-input-row{display:flex;align-items:center;gap:12px;padding:20px 24px;border-bottom:1.5px solid #eee}
+.search-input-row svg{width:22px;height:22px;color:var(--pink);flex-shrink:0;stroke:var(--pink);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.search-input{flex:1;border:none;outline:none;font-family:var(--font-body);font-size:18px;font-weight:600;color:var(--taupe);background:transparent}
+.search-input::placeholder{color:#bbb;font-weight:500}
+.search-close{background:none;border:none;cursor:pointer;font-size:22px;color:#bbb;padding:4px 8px;border-radius:8px;transition:all .2s;font-family:var(--font-body)}
+.search-close:hover{background:#eee;color:var(--taupe)}
+.search-results{max-height:440px;overflow-y:auto;padding:12px}
+.search-empty{padding:32px;text-align:center;color:#bbb;font-size:15px;font-weight:600}
+.search-empty span{display:block;font-size:32px;margin-bottom:8px}
+.result-item{padding:14px 16px;border-radius:var(--radius-sm);cursor:pointer;transition:background .15s;display:flex;gap:14px;align-items:flex-start;text-decoration:none}
+.result-item:hover{background:var(--cream)}
+.result-tag{flex-shrink:0;padding:3px 10px;border-radius:50px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;white-space:nowrap}
+.result-tag.pink{background:var(--pink-light);color:var(--pink)}
+.result-tag.blue{background:var(--blue-light);color:var(--blue)}
+.result-title{font-size:14px;font-weight:700;color:var(--taupe);margin-bottom:3px;font-family:var(--font-title)}
+.result-snippet{font-size:13px;color:var(--taupe);opacity:.65;line-height:1.4}
+.result-snippet mark{background:var(--cream);color:var(--pink);border-radius:3px;padding:0 2px;font-weight:700}
+.search-hint{padding:12px 20px;border-top:1px solid #eee;font-size:12px;color:#bbb;font-weight:600;display:flex;gap:16px}
+
 /* HERO */
 .hero{min-height:100vh;display:flex;align-items:center;background:var(--cream);padding:80px 5vw 60px;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-120px;right:-120px;width:500px;height:500px;background:radial-gradient(circle,rgba(10,177,255,0.12) 0%,transparent 70%);pointer-events:none}
-.hero::after{content:'';position:absolute;bottom:-80px;left:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(246,60,103,0.10) 0%,transparent 70%);pointer-events:none}
+.hero::before{content:'';position:absolute;top:-120px;right:-120px;width:500px;height:500px;background:radial-gradient(circle,rgba(10,177,255,.12) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(246,60,103,.10) 0%,transparent 70%);pointer-events:none}
 .hero-inner{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--pink);color:#fff;font-size:12px;font-weight:800;padding:6px 14px;border-radius:50px;margin-bottom:20px;letter-spacing:0.04em;text-transform:uppercase}
-.hero-badge span{font-size:16px}
-.hero h1{font-size:clamp(42px,5.5vw,72px);line-height:1.05;color:var(--taupe);margin-bottom:20px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--pink);color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:50px;margin-bottom:20px;letter-spacing:.04em;text-transform:uppercase}
+.hero h1{font-size:clamp(42px,5.5vw,72px);line-height:1.05;color:var(--taupe);margin-bottom:20px;font-weight:900}
 .hero h1 .highlight{color:var(--pink)}
 .hero h1 .highlight-blue{color:var(--blue)}
-.hero-sub{font-size:17px;line-height:1.7;color:var(--taupe);opacity:.8;max-width:480px;margin-bottom:36px;font-weight:600}
+.hero-sub{font-size:17px;line-height:1.7;color:var(--taupe);opacity:.8;max-width:480px;margin-bottom:36px;font-weight:500}
 .hero-cta-group{display:flex;gap:12px;flex-wrap:wrap}
-.btn-primary{background:var(--pink);color:#fff;border:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;padding:14px 28px;border-radius:50px;cursor:pointer;transition:all .2s;box-shadow:0 6px 24px rgba(246,60,103,0.35);text-decoration:none;display:inline-block}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(246,60,103,0.45)}
-.btn-secondary{background:transparent;color:var(--taupe);border:2px solid rgba(93,87,107,0.2);font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;padding:13px 28px;border-radius:50px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
+.btn-primary{background:var(--pink);color:#fff;border:none;font-family:var(--font-body);font-weight:700;font-size:15px;padding:14px 28px;border-radius:50px;cursor:pointer;transition:all .2s;box-shadow:0 6px 24px rgba(246,60,103,.35);text-decoration:none;display:inline-block}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(246,60,103,.45)}
+.btn-secondary{background:transparent;color:var(--taupe);border:2px solid rgba(93,87,107,.2);font-family:var(--font-body);font-weight:700;font-size:15px;padding:13px 28px;border-radius:50px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
 .btn-secondary:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
-.hero-visual{position:relative;display:flex;align-items:center;justify-content:center}
-.stat-float{background:var(--white);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow);text-align:center}
-.stat-float .num{font-family:'Fredoka One',cursive;font-size:52px;color:var(--pink);line-height:1}
-.stat-float .label{font-size:13px;font-weight:700;color:var(--taupe);opacity:.7;margin-top:4px}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%}
-.stat-card{background:var(--white);border-radius:var(--radius-sm);padding:18px 16px;box-shadow:var(--shadow-sm);text-align:center;transition:transform .2s}
+
+/* HERO STAT GRID — layout: 2 big stacked, 2 small side by side */
+.stat-grid{display:flex;flex-direction:column;gap:14px;width:100%}
+.stat-row{display:grid;gap:14px}
+.stat-row.full{grid-template-columns:1fr}
+.stat-row.half{grid-template-columns:1fr 1fr}
+.stat-card{background:var(--white);border-radius:var(--radius-sm);padding:18px 20px;box-shadow:var(--shadow-sm);text-align:center;transition:transform .2s}
 .stat-card:hover{transform:translateY(-3px)}
-.stat-card .num{font-family:'Fredoka One',cursive;font-size:34px;line-height:1;margin-bottom:4px}
-.stat-card .lbl{font-size:11px;font-weight:700;color:var(--taupe);opacity:.65;text-transform:uppercase;letter-spacing:0.04em;line-height:1.3}
+.stat-card.big{padding:26px 20px}
+.stat-card .num{font-family:var(--font-brand);font-size:34px;line-height:1;margin-bottom:4px}
+.stat-card.big .num{font-size:48px}
+.stat-card .lbl{font-size:11px;font-weight:700;color:var(--taupe);opacity:.65;text-transform:uppercase;letter-spacing:.04em;line-height:1.3}
 .stat-card.pink .num{color:var(--pink)}
 .stat-card.blue .num{color:var(--blue)}
-.stat-card.big{grid-column:1/-1;padding:22px}
-.stat-card.big .num{font-size:44px}
 
 /* SECTIONS */
 section{padding:80px 5vw;position:relative}
 .section-inner{max-width:1200px;margin:0 auto}
-.section-tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:16px}
+.section-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:16px}
 .section-tag.pink{background:var(--pink-light);color:var(--pink)}
 .section-tag.blue{background:var(--blue-light);color:var(--blue)}
-.section-title{font-size:clamp(32px,4vw,52px);line-height:1.1;margin-bottom:16px;color:var(--taupe)}
-.section-sub{font-size:16px;line-height:1.7;color:var(--taupe);opacity:.7;max-width:600px;margin-bottom:48px;font-weight:600}
+.section-title{font-size:clamp(32px,4vw,52px);line-height:1.1;margin-bottom:16px;color:var(--taupe);font-weight:800}
+.section-sub{font-size:16px;line-height:1.7;color:var(--taupe);opacity:.7;max-width:600px;margin-bottom:48px;font-weight:500}
 
 /* O QUE É A TB */
 .tb-what{background:var(--white)}
@@ -83,25 +110,24 @@ section{padding:80px 5vw;position:relative}
 .what-card{background:var(--cream);border-radius:var(--radius);padding:28px 24px;transition:transform .2s,box-shadow .2s}
 .what-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
 .what-icon{font-size:36px;margin-bottom:14px}
-.what-card h3{font-size:17px;font-weight:800;color:var(--taupe);margin-bottom:8px}
+.what-card h3{font-size:17px;font-weight:700;color:var(--taupe);margin-bottom:8px;font-family:var(--font-title)}
 .what-card p{font-size:14px;line-height:1.6;color:var(--taupe);opacity:.75}
 .symptom-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-.pill{background:var(--white);border:1.5px solid rgba(93,87,107,0.12);border-radius:50px;padding:6px 16px;font-size:13px;font-weight:700;color:var(--taupe);transition:all .2s}
+.pill{background:var(--white);border:1.5px solid rgba(93,87,107,.12);border-radius:50px;padding:6px 16px;font-size:13px;font-weight:600;color:var(--taupe);transition:all .2s;cursor:default}
 .pill:hover{background:var(--pink);border-color:var(--pink);color:#fff}
 .risk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:32px}
 .risk-card{background:var(--pink-light);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;gap:10px}
 .risk-card .ico{font-size:22px}
-.risk-card span{font-size:13px;font-weight:700;color:var(--pink)}
+.risk-card span{font-size:13px;font-weight:600;color:var(--pink)}
 .grave-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}
 .grave-card{border-radius:var(--radius);padding:24px;position:relative;overflow:hidden}
 .grave-card.miliar{background:linear-gradient(135deg,#e8f8ff 0%,#d0f0ff 100%)}
 .grave-card.meningea{background:linear-gradient(135deg,#fff0f4 0%,#ffd6e4 100%)}
-.grave-card h4{font-family:'Fredoka One',cursive;font-size:20px;margin-bottom:8px}
+.grave-card h4{font-family:var(--font-title);font-size:20px;font-weight:800;margin-bottom:8px}
 .grave-card.miliar h4{color:var(--blue)}
 .grave-card.meningea h4{color:var(--pink)}
-.grave-card p{font-size:13px;line-height:1.6;font-weight:600;color:var(--taupe);opacity:.8}
-.morte-badge{display:inline-block;padding:4px 12px;border-radius:50px;font-size:12px;font-weight:800;margin-top:10px}
-.morte-badge.danger{background:var(--pink);color:#fff}
+.grave-card p{font-size:13px;line-height:1.6;font-weight:500;color:var(--taupe);opacity:.8}
+.morte-badge{display:inline-block;padding:4px 12px;border-radius:50px;font-size:12px;font-weight:700;margin-top:10px;background:var(--pink);color:#fff}
 
 /* VACINA */
 .tb-vacina{background:var(--cream)}
@@ -110,68 +136,68 @@ section{padding:80px 5vw;position:relative}
 .tl-item{position:relative;margin-bottom:28px;opacity:0;transform:translateX(-20px);transition:all .5s}
 .tl-item.visible{opacity:1;transform:translateX(0)}
 .tl-dot{position:absolute;left:-27px;top:4px;width:16px;height:16px;border-radius:50%;border:3px solid var(--white);background:var(--pink);box-shadow:0 0 0 2px var(--pink)}
-.tl-item:nth-child(2) .tl-dot{background:var(--blue);box-shadow:0 0 0 2px var(--blue)}
-.tl-item:nth-child(3) .tl-dot{background:var(--pink);box-shadow:0 0 0 2px var(--pink)}
-.tl-item:nth-child(4) .tl-dot{background:var(--blue);box-shadow:0 0 0 2px var(--blue)}
-.tl-year{font-family:'Fredoka One',cursive;font-size:24px;color:var(--pink);line-height:1}
+.tl-item:nth-child(even) .tl-dot{background:var(--blue);box-shadow:0 0 0 2px var(--blue)}
+.tl-year{font-family:var(--font-brand);font-size:24px;color:var(--pink);line-height:1}
 .tl-item:nth-child(even) .tl-year{color:var(--blue)}
-.tl-title{font-size:15px;font-weight:800;color:var(--taupe);margin:2px 0}
+.tl-title{font-size:15px;font-weight:700;font-family:var(--font-title);color:var(--taupe);margin:2px 0}
 .tl-text{font-size:13px;line-height:1.6;color:var(--taupe);opacity:.75}
 .how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:36px}
 .how-card{background:var(--white);border-radius:var(--radius);padding:24px 20px;text-align:center;box-shadow:var(--shadow-sm);transition:transform .2s}
 .how-card:hover{transform:translateY(-4px)}
-.how-step{width:36px;height:36px;border-radius:50%;background:var(--pink);color:#fff;font-family:'Fredoka One',cursive;font-size:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.how-step{width:36px;height:36px;border-radius:50%;background:var(--pink);color:#fff;font-family:var(--font-brand);font-size:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
 .how-card:nth-child(even) .how-step{background:var(--blue)}
-.how-card h4{font-size:14px;font-weight:800;color:var(--taupe);margin-bottom:6px}
+.how-card h4{font-size:14px;font-weight:700;font-family:var(--font-title);color:var(--taupe);margin-bottom:6px}
 .how-card p{font-size:12px;line-height:1.5;color:var(--taupe);opacity:.7}
 .contraindication-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-.contra-card{background:var(--pink-light);border-left:3px solid var(--pink);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;font-weight:700;color:var(--taupe)}
+.contra-card{background:var(--pink-light);border-left:3px solid var(--pink);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;font-weight:600;color:var(--taupe)}
 .novas-vacinas{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:24px}
 .nova-card{background:var(--blue-light);border-radius:var(--radius);padding:22px 20px}
-.nova-card h4{font-family:'Fredoka One',cursive;font-size:20px;color:var(--blue);margin-bottom:6px}
+.nova-card h4{font-family:var(--font-title);font-size:20px;font-weight:800;color:var(--blue);margin-bottom:6px}
 .nova-card p{font-size:13px;line-height:1.5;color:var(--taupe);opacity:.8}
-.nova-card .tag{display:inline-block;background:var(--blue);color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:50px;margin-bottom:8px}
+.nova-card .tag{display:inline-block;background:var(--blue);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:50px;margin-bottom:8px}
 
 /* NÚMEROS */
 .tb-numeros{background:var(--white)}
 .numeros-hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:48px}
 .numero-big{background:var(--cream);border-radius:var(--radius);padding:32px 24px;text-align:center;transition:transform .2s,box-shadow .2s;cursor:default}
 .numero-big:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
-.numero-big .n{font-family:'Fredoka One',cursive;font-size:56px;line-height:1;margin-bottom:8px}
+.numero-big .n{font-family:var(--font-brand);font-size:56px;line-height:1;margin-bottom:8px}
 .numero-big .n.pink{color:var(--pink)}
 .numero-big .n.blue{color:var(--blue)}
-.numero-big .desc{font-size:14px;font-weight:700;color:var(--taupe);opacity:.7;line-height:1.4}
+.numero-big .desc{font-size:14px;font-weight:500;color:var(--taupe);opacity:.7;line-height:1.4}
 .daly-bar{background:var(--cream);border-radius:var(--radius);padding:28px;margin-bottom:24px}
-.daly-bar h3{font-family:'Fredoka One',cursive;font-size:22px;color:var(--taupe);margin-bottom:16px}
-.bar-container{background:rgba(93,87,107,0.08);border-radius:50px;height:28px;overflow:hidden;margin-bottom:8px;position:relative}
-.bar-fill{height:100%;border-radius:50px;display:flex;align-items:center;padding:0 14px;font-size:12px;font-weight:800;color:#fff;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.daly-bar h3{font-family:var(--font-title);font-size:22px;font-weight:700;color:var(--taupe);margin-bottom:16px}
+.bar-container{background:rgba(93,87,107,.08);border-radius:50px;height:28px;overflow:hidden;margin-bottom:8px;position:relative}
+.bar-fill{height:100%;border-radius:50px;display:flex;align-items:center;padding:0 14px;font-size:12px;font-weight:700;color:#fff;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
 .bar-fill.pink{background:var(--pink)}
 .bar-fill.blue{background:var(--blue)}
-.bar-label{font-size:13px;font-weight:700;color:var(--taupe);opacity:.7;margin-bottom:14px}
+.bar-label{font-size:13px;font-weight:600;color:var(--taupe);opacity:.7;margin-bottom:14px}
 
 /* MITOS E FACTOS */
 .tb-mitos{background:var(--cream)}
 .mitos-intro{text-align:center;margin-bottom:60px}
 .mito-pair{margin-bottom:72px;opacity:0;transform:translateY(40px);transition:all .6s cubic-bezier(.4,0,.2,1)}
 .mito-pair.visible{opacity:1;transform:translateY(0)}
-.mito-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--pink);color:#fff;font-family:'Fredoka One',cursive;font-size:16px;margin-bottom:20px}
+.mito-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--pink);color:#fff;font-family:var(--font-brand);font-size:16px;margin-bottom:20px}
 
-/* SPEECH BUBBLES */
-.bubble-row{display:flex;align-items:flex-end;gap:20px;margin-bottom:32px}
-.bubble-row.right{justify-content:flex-end}
-.avatar-placeholder{flex-shrink:0;width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;text-align:center;line-height:1.3;border:3px dashed;padding:8px}
+/* SPEECH BUBBLES — GenZ RIGHT / Doutor LEFT */
+.bubble-row{display:flex;align-items:flex-end;gap:20px;margin-bottom:32px;justify-content:flex-end}
+.bubble-row.doctor{justify-content:flex-start}
+.avatar-placeholder{flex-shrink:0;width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;text-align:center;line-height:1.3;border:3px dashed;padding:8px}
 .avatar-placeholder.genz{background:var(--pink-light);border-color:var(--pink);color:var(--pink)}
 .avatar-placeholder.doc{background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
 .bubble{max-width:78%;padding:22px 28px;border-radius:28px;position:relative;box-shadow:var(--shadow-sm)}
-.bubble.mito-bubble{background:var(--white);border-bottom-left-radius:4px}
-.bubble.mito-bubble::before{content:'';position:absolute;bottom:-1px;left:-10px;width:0;height:0;border-right:12px solid var(--white);border-top:8px solid transparent;border-bottom:0}
-.bubble.facto-bubble{background:var(--blue);color:#fff;border-bottom-right-radius:4px}
-.bubble.facto-bubble::after{content:'';position:absolute;bottom:-1px;right:-10px;width:0;height:0;border-left:12px solid var(--blue);border-top:8px solid transparent;border-bottom:0}
-.mito-tag{display:inline-block;background:var(--pink);color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:50px;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em}
-.facto-tag{display:inline-block;background:rgba(255,255,255,0.25);color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:50px;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em}
-.bubble-text{font-size:15px;font-weight:700;line-height:1.5;color:var(--taupe)}
+/* Gen Z bubble — tail points RIGHT toward avatar */
+.bubble.mito-bubble{background:var(--white);border-bottom-right-radius:4px}
+.bubble.mito-bubble::after{content:'';position:absolute;bottom:-1px;right:-10px;width:0;height:0;border-left:12px solid var(--white);border-top:8px solid transparent;border-bottom:0}
+/* Doctor bubble — tail points LEFT toward avatar */
+.bubble.facto-bubble{background:var(--blue);color:#fff;border-bottom-left-radius:4px}
+.bubble.facto-bubble::before{content:'';position:absolute;bottom:-1px;left:-10px;width:0;height:0;border-right:12px solid var(--blue);border-top:8px solid transparent;border-bottom:0}
+.mito-tag{display:inline-block;background:var(--pink);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:50px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+.facto-tag{display:inline-block;background:rgba(255,255,255,.25);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:50px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+.bubble-text{font-size:15px;font-weight:600;line-height:1.5;color:var(--taupe)}
 .bubble.facto-bubble .bubble-text{color:#fff}
-.bubble-stat{display:inline-block;background:rgba(255,255,255,0.2);border-radius:50px;padding:4px 12px;font-size:13px;font-weight:800;margin-top:8px;color:#fff}
+.bubble-stat{display:inline-block;background:rgba(255,255,255,.2);border-radius:50px;padding:4px 12px;font-size:13px;font-weight:700;margin-top:8px;color:#fff}
 
 /* DESAFIOS */
 .tb-desafios{background:var(--white)}
@@ -183,13 +209,13 @@ section{padding:80px 5vw;position:relative}
 .desafio-card.imig{background:linear-gradient(135deg,#fffae3,#fff0c3)}
 .desafio-card.vih{background:linear-gradient(135deg,#f3f0ff,#e0d8ff)}
 .desafio-icon{font-size:40px;margin-bottom:16px}
-.desafio-card h3{font-family:'Fredoka One',cursive;font-size:24px;margin-bottom:10px}
+.desafio-card h3{font-family:var(--font-title);font-size:24px;font-weight:800;margin-bottom:10px}
 .desafio-card.mdr h3{color:var(--pink)}
 .desafio-card.glob h3{color:var(--blue)}
 .desafio-card.imig h3{color:#d4a017}
 .desafio-card.vih h3{color:#7c5cbf}
 .desafio-card p{font-size:14px;line-height:1.6;color:var(--taupe);opacity:.8}
-.desafio-stat{margin-top:14px;padding:10px 14px;background:rgba(255,255,255,0.6);border-radius:var(--radius-sm);font-size:13px;font-weight:800;color:var(--taupe)}
+.desafio-stat{margin-top:14px;padding:10px 14px;background:rgba(255,255,255,.6);border-radius:var(--radius-sm);font-size:13px;font-weight:700;color:var(--taupe)}
 
 /* RECURSOS */
 .tb-recursos{background:var(--cream)}
@@ -197,30 +223,50 @@ section{padding:80px 5vw;position:relative}
 .recurso-card{background:var(--white);border-radius:var(--radius);padding:28px 24px;box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s;cursor:pointer}
 .recurso-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
 .recurso-card .ico{font-size:40px;margin-bottom:16px}
-.recurso-card h3{font-family:'Fredoka One',cursive;font-size:22px;color:var(--taupe);margin-bottom:8px}
+.recurso-card h3{font-family:var(--font-title);font-size:22px;font-weight:700;color:var(--taupe);margin-bottom:8px}
 .recurso-card p{font-size:13px;line-height:1.6;color:var(--taupe);opacity:.7}
-.recurso-card .action{margin-top:16px;display:inline-block;font-size:13px;font-weight:800;color:var(--pink)}
+.recurso-card .action{margin-top:16px;display:inline-block;font-size:13px;font-weight:700;color:var(--pink)}
 .glossario{margin-top:48px}
-.glossario h3{font-family:'Fredoka One',cursive;font-size:28px;color:var(--taupe);margin-bottom:24px}
+.glossario h3{font-family:var(--font-title);font-size:28px;font-weight:800;color:var(--taupe);margin-bottom:24px}
 .glossario-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
 .glossario-item{background:var(--white);border-radius:var(--radius-sm);padding:14px 18px;border-left:3px solid var(--blue)}
-.glossario-item dt{font-size:14px;font-weight:800;color:var(--blue);margin-bottom:4px}
+.glossario-item dt{font-size:14px;font-weight:700;color:var(--blue);margin-bottom:4px;font-family:var(--font-title)}
 .glossario-item dd{font-size:12px;line-height:1.5;color:var(--taupe);opacity:.75}
 
 /* QUERO VACINAR */
-.vacinar-section{background:var(--pink);padding:80px 5vw;text-align:center;position:relative;overflow:hidden}
-.vacinar-section::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(255,255,255,0.1) 0%,transparent 70%);pointer-events:none}
-.vacinar-section h2{font-size:clamp(36px,5vw,64px);color:#fff;margin-bottom:16px}
-.vacinar-section p{font-size:17px;color:rgba(255,255,255,.85);max-width:560px;margin:0 auto 36px;font-weight:600;line-height:1.6}
-.vacinar-box{background:#fff;border-radius:var(--radius);padding:32px;max-width:560px;margin:0 auto;text-align:left;box-shadow:0 12px 48px rgba(0,0,0,.15)}
-.vacinar-box h4{font-family:'Fredoka One',cursive;font-size:22px;color:var(--pink);margin-bottom:16px}
+.vacinar-section{background:var(--pink);padding:80px 5vw;position:relative;overflow:hidden}
+.vacinar-section::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);pointer-events:none}
+.vacinar-section h2{font-size:clamp(36px,5vw,64px);color:#fff;margin-bottom:16px;text-align:center;font-weight:900}
+.vacinar-section>p{font-size:17px;color:rgba(255,255,255,.85);max-width:560px;margin:0 auto 36px;font-weight:500;line-height:1.6;text-align:center}
+.vacinar-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+.vacinar-box{background:#fff;border-radius:var(--radius);padding:32px;box-shadow:0 12px 48px rgba(0,0,0,.15)}
+.vacinar-box h4{font-family:var(--font-title);font-size:20px;font-weight:800;color:var(--pink);margin-bottom:16px}
 .info-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
 .info-dot{width:8px;height:8px;border-radius:50%;background:var(--pink);flex-shrink:0;margin-top:6px}
-.info-item p{font-size:14px;line-height:1.5;font-weight:600;color:var(--taupe)}
+.info-item p{font-size:14px;line-height:1.5;font-weight:500;color:var(--taupe)}
+.info-item p strong{font-weight:700}
+
+/* MAP */
+.map-box{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.15)}
+.map-header{padding:20px 24px;background:#fff;border-bottom:1px solid #eee}
+.map-header h4{font-family:var(--font-title);font-size:20px;font-weight:800;color:var(--taupe);margin-bottom:8px}
+.map-header p{font-size:13px;color:var(--taupe);opacity:.7;line-height:1.5}
+.map-controls{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.map-btn{background:var(--pink);color:#fff;border:none;border-radius:50px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-body);transition:all .2s}
+.map-btn:hover{background:#d42d56}
+.map-btn.secondary{background:transparent;color:var(--taupe);border:1.5px solid rgba(93,87,107,.2)}
+.map-btn.secondary:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
+.map-search-row{display:flex;gap:8px;margin-top:10px}
+.map-search-input{flex:1;border:1.5px solid rgba(93,87,107,.15);border-radius:50px;padding:8px 16px;font-size:13px;font-family:var(--font-body);outline:none;color:var(--taupe)}
+.map-search-input:focus{border-color:var(--pink)}
+#vacinacaoMap{height:340px;width:100%}
+.map-note{padding:12px 20px;background:#f9f9f9;font-size:12px;color:var(--taupe);opacity:.7;line-height:1.5;font-weight:500}
+.leaflet-popup-content-wrapper{border-radius:12px!important;font-family:var(--font-body)!important}
+.leaflet-popup-content{font-size:13px!important;line-height:1.5!important}
 
 /* FOOTER */
 footer{background:var(--taupe);padding:40px 5vw;text-align:center}
-footer p{font-size:13px;color:rgba(255,255,255,.6);font-weight:600;line-height:1.7}
+footer p{font-size:13px;color:rgba(255,255,255,.6);font-weight:500;line-height:1.7}
 footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
 
 /* ANIMATIONS */
@@ -228,48 +274,23 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
 .fade-up.visible{opacity:1;transform:translateY(0)}
 .fade-left{opacity:0;transform:translateX(-30px);transition:all .6s cubic-bezier(.4,0,.2,1)}
 .fade-left.visible{opacity:1;transform:translateX(0)}
-.fade-right{opacity:0;transform:translateX(30px);transition:all .6s cubic-bezier(.4,0,.2,1)}
-.fade-right.visible{opacity:1;transform:translateX(0)}
 .delay-1{transition-delay:.1s}
 .delay-2{transition-delay:.2s}
 .delay-3{transition-delay:.3s}
 .delay-4{transition-delay:.4s}
 
-/* PESQUISA */
-.search-btn{background:none;border:none;cursor:pointer;padding:8px;border-radius:50%;transition:background .2s;display:flex;align-items:center;justify-content:center;color:var(--taupe)}
-.search-btn:hover{background:var(--pink-light);color:var(--pink)}
-.search-btn svg{width:20px;height:20px}
-.search-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(93,87,107,0.5);backdrop-filter:blur(6px);padding:80px 20px 20px;align-items:flex-start;justify-content:center}
-.search-overlay.open{display:flex}
-.search-box{background:var(--white);border-radius:24px;width:100%;max-width:680px;box-shadow:0 24px 64px rgba(0,0,0,.18);overflow:hidden}
-.search-input-row{display:flex;align-items:center;gap:12px;padding:20px 24px;border-bottom:1.5px solid #eee}
-.search-input-row svg{width:22px;height:22px;color:var(--pink);flex-shrink:0}
-.search-input{flex:1;border:none;outline:none;font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;color:var(--taupe);background:transparent}
-.search-input::placeholder{color:#bbb;font-weight:600}
-.search-close{background:none;border:none;cursor:pointer;font-size:22px;color:#bbb;padding:4px 8px;border-radius:8px;transition:all .2s;font-family:'Nunito',sans-serif}
-.search-close:hover{background:#eee;color:var(--taupe)}
-.search-results{max-height:440px;overflow-y:auto;padding:12px}
-.search-empty{padding:32px;text-align:center;color:#bbb;font-size:15px;font-weight:700}
-.search-empty span{display:block;font-size:32px;margin-bottom:8px}
-.result-item{padding:14px 16px;border-radius:var(--radius-sm);cursor:pointer;transition:background .15s;display:flex;gap:14px;align-items:flex-start;text-decoration:none}
-.result-item:hover{background:var(--cream)}
-.result-tag{flex-shrink:0;padding:3px 10px;border-radius:50px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;white-space:nowrap}
-.result-tag.pink{background:var(--pink-light);color:var(--pink)}
-.result-tag.blue{background:var(--blue-light);color:var(--blue)}
-.result-title{font-size:14px;font-weight:800;color:var(--taupe);margin-bottom:3px}
-.result-snippet{font-size:13px;color:var(--taupe);opacity:.65;line-height:1.4;font-weight:600}
-.result-snippet mark{background:var(--cream);color:var(--pink);border-radius:3px;padding:0 2px;font-weight:800}
-.search-hint{padding:12px 20px;border-top:1px solid #eee;font-size:12px;color:#bbb;font-weight:700;display:flex;gap:16px}
-
 /* RESPONSIVE */
+@media(max-width:900px){
+  .vacinar-inner{grid-template-columns:1fr}
+}
 @media(max-width:768px){
   .hero-inner{grid-template-columns:1fr;gap:40px}
-  .stat-grid{grid-template-columns:1fr 1fr}
   .grave-row{grid-template-columns:1fr}
   .nav-links{display:none}
   .hamburger{display:flex}
-  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:var(--white);padding:16px;border-bottom:1px solid rgba(93,87,107,.1);box-shadow:var(--shadow);gap:4px}
-  .bubble-row.right{justify-content:flex-start;flex-direction:row-reverse}
+  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:var(--white);padding:16px;border-bottom:1px solid rgba(93,87,107,.1);box-shadow:var(--shadow);gap:4px;z-index:99}
+  .bubble-row,.bubble-row.doctor{flex-direction:column!important;justify-content:flex-start!important;align-items:flex-start}
+  .bubble{max-width:90%}
 }
 </style>
 </head>
@@ -287,45 +308,72 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
       <li><a href="#desafios">Desafios</a></li>
       <li><a href="#recursos">Recursos</a></li>
     </ul>
-    <button class="nav-cta" onclick="document.getElementById('vacinar').scrollIntoView({behavior:'smooth'})">Quero vacinar‑me</button>
-    <button class="search-btn" onclick="openSearch()" aria-label="Pesquisar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    </button>
-    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
+    <div class="nav-right">
+      <button class="nav-cta" onclick="document.getElementById('vacinar').scrollIntoView({behavior:'smooth'})">Quero vacinar‑me</button>
+      <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
     </div>
   </div>
 </nav>
+
+<!-- ASSISTIVETOUCH SEARCH -->
+<button class="assistive-search" id="assistiveSearch" title="Pesquisar">
+  <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay" onclick="closeSearchIfOutside(event)">
+  <div class="search-box" id="searchBox">
+    <div class="search-input-row">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" id="searchInput" type="text" placeholder="Pesquisa… (ex: BCG, mitos, VIH, DALYs)" oninput="doSearch()" autocomplete="off" spellcheck="false">
+      <button class="search-close" onclick="closeSearch()">✕</button>
+    </div>
+    <div class="search-results" id="searchResults">
+      <div class="search-empty"><span>🔍</span>Escreve algo para pesquisar</div>
+    </div>
+    <div class="search-hint">
+      <span>↵ selecionar</span><span>ESC fechar</span><span>Ctrl+K abre</span><span>Só informação deste site</span>
+    </div>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
     <div>
       <div class="hero-badge"><span>⚠️</span> Aviso de saúde pública</div>
-      <h1>A doença que<br><span class="highlight">toda a gente</span><br>esqueceu<br><span class="highlight-blue">mas não foi.</span></h1>
+      <h1>A doença que<br><span class="highlight">toda a gente</span><br>esqueceu,<br><span class="highlight-blue">mas não foi.</span></h1>
       <p class="hero-sub">A tuberculose mata mais do que qualquer outra doença infeciosa no mundo. Em 2024. Sim, agora.</p>
       <div class="hero-cta-group">
         <a href="#mitos" class="btn-primary">Ver os mitos 👀</a>
         <a href="#o-que-e" class="btn-secondary">Saber mais</a>
       </div>
     </div>
-    <div class="hero-visual">
+    <div>
       <div class="stat-grid">
-        <div class="stat-card big pink fade-up">
-          <div class="num">1,23M</div>
-          <div class="lbl">mortes em 2024</div>
+        <div class="stat-row full">
+          <div class="stat-card big pink fade-up">
+            <div class="num">1,23M</div>
+            <div class="lbl">mortes em 2024</div>
+          </div>
         </div>
-        <div class="stat-card blue fade-up delay-1">
-          <div class="num">83M</div>
-          <div class="lbl">vidas salvas desde 2000</div>
+        <div class="stat-row full">
+          <div class="stat-card big blue fade-up delay-1">
+            <div class="num">83M</div>
+            <div class="lbl">vidas salvas desde 2000</div>
+          </div>
         </div>
-        <div class="stat-card pink fade-up delay-2">
-          <div class="num">88%</div>
-          <div class="lbl">cobertura BCG mundial</div>
-        </div>
-        <div class="stat-card blue fade-up delay-3">
-          <div class="num">122M</div>
-          <div class="lbl">DALYs em 2019</div>
+        <div class="stat-row half">
+          <div class="stat-card blue fade-up delay-2">
+            <div class="num">115K+</div>
+            <div class="lbl">mortes prevenidas em crianças</div>
+          </div>
+          <div class="stat-card pink fade-up delay-3">
+            <div class="num">88%</div>
+            <div class="lbl">cobertura BCG mundial</div>
+          </div>
         </div>
       </div>
     </div>
@@ -338,7 +386,6 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
     <span class="section-tag pink">Aba 1</span>
     <h2 class="section-title fade-up">O que é a tuberculose?</h2>
     <p class="section-sub fade-up delay-1">Não é uma doença de museu. É uma bactéria real, transmitida pelo ar, que ainda hoje causa mais mortes do que quase tudo o resto.</p>
-
     <div class="what-grid">
       <div class="what-card fade-up delay-1">
         <div class="what-icon">🦠</div>
@@ -348,7 +395,7 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
       <div class="what-card fade-up delay-2">
         <div class="what-icon">💨</div>
         <h3>Transmissão</h3>
-        <p>Por via aérea, através de aerossóis e gotículas libertadas ao tossir, falar ou espirrar. Existe também <strong>infeção latente</strong>: tens a bactéria, sem sintomas, sem transmitires.</p>
+        <p>Por via aérea, através de aerossóis e gotículas ao tossir, falar ou espirrar. Existe também <strong>infeção latente</strong>: tens a bactéria, sem sintomas, sem transmitires — mas pode ativar-se.</p>
       </div>
       <div class="what-card fade-up delay-3">
         <div class="what-icon">🌡️</div>
@@ -363,8 +410,7 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
         </div>
       </div>
     </div>
-
-    <h3 style="font-family:'Fredoka One',cursive;font-size:24px;color:var(--taupe);margin-bottom:16px" class="fade-up">Quem corre mais risco?</h3>
+    <h3 class="fade-up" style="font-family:var(--font-title);font-size:24px;font-weight:800;color:var(--taupe);margin-bottom:16px">Quem corre mais risco?</h3>
     <div class="risk-grid fade-up">
       <div class="risk-card"><span class="ico">👶</span><span>Bebés e crianças</span></div>
       <div class="risk-card"><span class="ico">🩺</span><span>Diabéticos</span></div>
@@ -373,8 +419,7 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
       <div class="risk-card"><span class="ico">🍽️</span><span>Malnutrição</span></div>
       <div class="risk-card"><span class="ico">🚬</span><span>Fumadores</span></div>
     </div>
-
-    <h3 style="font-family:'Fredoka One',cursive;font-size:24px;color:var(--taupe);margin:36px 0 16px" class="fade-up">As formas mais graves</h3>
+    <h3 class="fade-up" style="font-family:var(--font-title);font-size:24px;font-weight:800;color:var(--taupe);margin:36px 0 16px">As formas mais graves</h3>
     <div class="grave-row fade-up">
       <div class="grave-card miliar">
         <h4>Tuberculose miliar</h4>
@@ -383,7 +428,7 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
       <div class="grave-card meningea">
         <h4>Tuberculose meníngea</h4>
         <p>A forma mais grave. Infeta as membranas cerebrais (meninges).</p>
-        <span class="morte-badge danger">Mortalidade: 30%</span>
+        <span class="morte-badge">Mortalidade: 30%</span>
       </div>
     </div>
   </div>
@@ -395,7 +440,6 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
     <span class="section-tag blue">Aba 2</span>
     <h2 class="section-title fade-up">A vacina BCG</h2>
     <p class="section-sub fade-up delay-1">Tem mais de 100 anos, é administrada a bebés em todo o mundo, e é uma das vacinas mais seguras da história. Conheces mesmo?</p>
-
     <div class="timeline fade-left">
       <div class="tl-item">
         <div class="tl-dot"></div>
@@ -422,13 +466,12 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
         <div class="tl-text">Devido à baixa incidência, Portugal passa a vacinar apenas grupos de risco. A vacina mantém-se disponível para quem precisa.</div>
       </div>
     </div>
-
-    <h3 style="font-family:'Fredoka One',cursive;font-size:28px;color:var(--taupe);margin-bottom:24px" class="fade-up">Como funciona no teu corpo?</h3>
+    <h3 class="fade-up" style="font-family:var(--font-title);font-size:28px;font-weight:800;color:var(--taupe);margin-bottom:24px">Como funciona no teu corpo?</h3>
     <div class="how-grid fade-up">
       <div class="how-card">
         <div class="how-step">1</div>
         <h4>Injeção intradérmica</h4>
-        <p>Administrada no braço direito, a 10-15 graus. A bactéria atenuada entra na pele.</p>
+        <p>Administrada a 10-15 graus. Em recém-nascidos no braço direito; a partir dos 12 meses no braço esquerdo, segundo as normas da DGS.</p>
       </div>
       <div class="how-card">
         <div class="how-step">2</div>
@@ -451,8 +494,7 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
         <p>A resposta inflamatória local cria a cicatriz permanente — o sinal de que a vacina funcionou.</p>
       </div>
     </div>
-
-    <h3 style="font-family:'Fredoka One',cursive;font-size:24px;color:var(--taupe);margin:36px 0 16px" class="fade-up">Quem NÃO deve vacinar?</h3>
+    <h3 class="fade-up" style="font-family:var(--font-title);font-size:24px;font-weight:800;color:var(--taupe);margin:36px 0 16px">Quem NÃO deve vacinar?</h3>
     <div class="contraindication-grid fade-up">
       <div class="contra-card">Grávidas</div>
       <div class="contra-card">Pessoas com infeção por VIH</div>
@@ -461,9 +503,8 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
       <div class="contra-card">Quem já teve tuberculose</div>
       <div class="contra-card">Bebés cuja mãe tomou imunossupressores na gravidez</div>
     </div>
-
-    <h3 style="font-family:'Fredoka One',cursive;font-size:24px;color:var(--taupe);margin:36px 0 8px" class="fade-up">Novas vacinas em investigação</h3>
-    <p style="font-size:14px;color:var(--taupe);opacity:.7;margin-bottom:20px;font-weight:600" class="fade-up">A ciência não parou na BCG. Estes candidatos estão em fases avançadas de investigação clínica.</p>
+    <h3 class="fade-up" style="font-family:var(--font-title);font-size:24px;font-weight:800;color:var(--taupe);margin:36px 0 8px">Novas vacinas em investigação</h3>
+    <p class="fade-up" style="font-size:14px;color:var(--taupe);opacity:.7;margin-bottom:20px">A ciência não parou na BCG. Estes candidatos estão em fases avançadas de investigação clínica.</p>
     <div class="novas-vacinas fade-up">
       <div class="nova-card">
         <div class="tag">Vacina subunitária</div>
@@ -473,12 +514,12 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
       <div class="nova-card">
         <div class="tag">Investigação clínica</div>
         <h4>VPM1002</h4>
-        <p>Versão geneticamente modificada da BCG com potencial para melhorar a proteção em adultos.</p>
+        <p>Versão geneticamente modificada da BCG com potencial para melhorar a proteção em adultos e reduzir transmissão.</p>
       </div>
       <div class="nova-card">
         <div class="tag">Investigação clínica</div>
         <h4>MTBVAC</h4>
-        <p>Candidato vivo atenuado de Mycobacterium tuberculosis, com potencial para substituir ou complementar a BCG.</p>
+        <p>Candidato vivo atenuado de Mycobacterium tuberculosis com potencial para substituir ou complementar a BCG.</p>
       </div>
     </div>
   </div>
@@ -490,7 +531,6 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
     <span class="section-tag pink">Aba 3</span>
     <h2 class="section-title fade-up">Os números que te deviam ter contado</h2>
     <p class="section-sub fade-up delay-1">Não são de campanha. São da Organização Mundial de Saúde.</p>
-
     <div class="numeros-hero">
       <div class="numero-big fade-up delay-1">
         <div class="n pink">1,23M</div>
@@ -501,54 +541,43 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
         <div class="desc">vidas salvas desde 2000 graças aos esforços globais contra a TB</div>
       </div>
       <div class="numero-big fade-up delay-3">
-        <div class="n pink">115K+</div>
+        <div class="n blue">115K+</div>
         <div class="desc">mortes prevenidas em crianças nos primeiros 15 anos de vida pela BCG</div>
       </div>
       <div class="numero-big fade-up delay-4">
-        <div class="n blue">88%</div>
+        <div class="n pink">88%</div>
         <div class="desc">cobertura vacinal mundial com BCG em 2024</div>
       </div>
     </div>
-
     <div class="daly-bar fade-up">
       <h3>O que são DALYs?</h3>
-      <p style="font-size:14px;font-weight:600;color:var(--taupe);opacity:.8;line-height:1.6;margin-bottom:20px">Os DALYs (Disability-Adjusted Life Years) medem o impacto total de uma doença numa população. São a soma de duas componentes: <strong>YLL</strong> — anos de vida perdidos por morte prematura — e <strong>YLD</strong> — anos vividos com incapacidade. Permitem comparar doenças diferentes e definir prioridades em saúde pública.</p>
+      <p style="font-size:14px;font-weight:500;color:var(--taupe);opacity:.8;line-height:1.6;margin-bottom:20px">Os DALYs (Disability-Adjusted Life Years) medem o impacto total de uma doença numa população. São a soma de <strong>YLL</strong> (anos de vida perdidos por morte prematura) e <strong>YLD</strong> (anos vividos com incapacidade). Permitem comparar doenças diferentes e definir prioridades em saúde pública.</p>
       <h3 style="margin-bottom:12px">122 milhões de DALYs atribuídos à TB em 2019</h3>
       <div class="bar-label">64 milhões — doença ativa (YLL)</div>
-      <div class="bar-container">
-        <div class="bar-fill pink" id="bar1" style="width:0%" data-width="52%">64M DALYs</div>
-      </div>
+      <div class="bar-container"><div class="bar-fill pink" id="bar1" data-width="52%">64M DALYs</div></div>
       <div class="bar-label">58 milhões — sequelas pós-tuberculose (YLD)</div>
-      <div class="bar-container">
-        <div class="bar-fill blue" id="bar2" style="width:0%" data-width="47%">58M DALYs</div>
-      </div>
+      <div class="bar-container"><div class="bar-fill blue" id="bar2" data-width="47%">58M DALYs</div></div>
     </div>
-
-    <div class="daly-bar fade-up" style="margin-top:20px;background:linear-gradient(135deg,#e8f8ff,#d0f0ff)">
+    <div class="daly-bar fade-up" style="background:linear-gradient(135deg,#e8f8ff,#d0f0ff)">
       <h3 style="color:var(--blue);margin-bottom:6px">~3 mil milhões de DALYs evitados desde 2000</h3>
-      <p style="font-size:14px;font-weight:600;color:var(--taupe);opacity:.8;line-height:1.6;margin-bottom:20px">Com 80% de cobertura vacinal global, o cálculo com base nas 83 milhões de vidas salvas mostra o impacto real da vacinação:</p>
-      <div class="bar-label">YLL evitados — 83M vidas × 30 anos por vida = 2,49 mil milhões de anos</div>
-      <div class="bar-container">
-        <div class="bar-fill blue" id="bar3" style="width:0%" data-width="83%">2,49 mil milhões</div>
-      </div>
-      <div class="bar-label">YLD evitados — sequelas e incapacidades (20% dos YLL) = 0,50 mil milhões de anos</div>
-      <div class="bar-container">
-        <div class="bar-fill pink" id="bar4" style="width:0%" data-width="17%">0,50 mil milhões</div>
-      </div>
-      <div style="margin-top:16px;background:var(--blue);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:12px">
-        <div style="font-family:'Fredoka One',cursive;font-size:36px;color:#fff;white-space:nowrap">= 2,99 mil milhões</div>
-        <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.9);line-height:1.5">de anos de vida saudável ganhos graças ao controlo global da tuberculose desde 2000</div>
+      <p style="font-size:14px;font-weight:500;color:var(--taupe);opacity:.8;line-height:1.6;margin-bottom:20px">Com 80% de cobertura vacinal global, o cálculo com base nas 83 milhões de vidas salvas mostra o impacto real da vacinação:</p>
+      <div class="bar-label">YLL evitados — 83M vidas × 30 anos = 2,49 mil milhões de anos</div>
+      <div class="bar-container"><div class="bar-fill blue" id="bar3" data-width="83%">2,49 mil milhões</div></div>
+      <div class="bar-label">YLD evitados — sequelas e incapacidades (20% dos YLL) = 0,50 mil milhões</div>
+      <div class="bar-container"><div class="bar-fill pink" id="bar4" data-width="17%">0,50 mil milhões</div></div>
+      <div style="margin-top:16px;background:var(--blue);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="font-family:var(--font-brand);font-size:36px;color:#fff;white-space:nowrap">= 2,99 mil milhões</div>
+        <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.9);line-height:1.5">de anos de vida saudável ganhos graças ao controlo global da tuberculose desde 2000</div>
       </div>
     </div>
-
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px" class="fade-up">
       <div style="background:var(--pink-light);border-radius:var(--radius);padding:24px">
-        <div style="font-family:'Fredoka One',cursive;font-size:48px;color:var(--pink)">80%+</div>
-        <p style="font-size:14px;font-weight:700;color:var(--taupe);opacity:.8">dos casos e mortes ocorrem em países de baixo e médio rendimento</p>
+        <div style="font-family:var(--font-brand);font-size:48px;color:var(--pink)">80%+</div>
+        <p style="font-size:14px;font-weight:500;color:var(--taupe);opacity:.8">dos casos e mortes ocorrem em países de baixo e médio rendimento</p>
       </div>
       <div style="background:var(--blue-light);border-radius:var(--radius);padding:24px">
-        <div style="font-family:'Fredoka One',cursive;font-size:48px;color:var(--blue)">2 em 5</div>
-        <p style="font-size:14px;font-weight:700;color:var(--taupe);opacity:.8">doentes com MDR-TB recebe tratamento eficaz. Os outros 3? Sem sorte.</p>
+        <div style="font-family:var(--font-brand);font-size:48px;color:var(--blue)">2 em 5</div>
+        <p style="font-size:14px;font-weight:500;color:var(--taupe);opacity:.8">doentes com MDR-TB recebe tratamento eficaz. Os outros 3? Sem sorte.</p>
       </div>
     </div>
   </div>
@@ -560,203 +589,128 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
     <span class="section-tag pink">Aba 4</span>
     <div class="mitos-intro">
       <h2 class="section-title fade-up">Mitos vs. Factos</h2>
-      <p class="section-sub fade-up delay-1" style="margin:0 auto">O que a internet diz vs. o que a ciência prova. Alerta de spoiler: a ciência ganha sempre.</p>
+      <p class="section-sub fade-up delay-1" style="margin:0 auto">O que a internet diz vs. o que a ciência prova. Spoiler: a ciência ganha sempre.</p>
     </div>
 
     <!-- MITO 1 -->
-    <div class="mito-pair" id="mp1">
-      <div class="mito-num">1</div>
+    <div class="mito-pair"><div class="mito-num">1</div>
       <div class="bubble-row">
+        <div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"A tuberculose? Isso era uma doença do século XIX. Já não existe, não é?"</div></div>
         <div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div>
-        <div class="bubble mito-bubble">
-          <div class="mito-tag">🙄 Mito</div>
-          <div class="bubble-text">"A tuberculose? Isso era uma doença do século XIX. Já não existe, não é?"</div>
-        </div>
       </div>
-      <div class="bubble-row right">
-        <div class="bubble facto-bubble">
-          <div class="facto-tag">✅ Facto</div>
-          <div class="bubble-text">Sim, existe. Em 2024, a tuberculose foi a doença infeciosa que mais matou no mundo, a par com o VIH. Não é história — é o presente.</div>
-          <div class="bubble-stat">1,23 milhões de mortes em 2024</div>
-        </div>
+      <div class="bubble-row doctor">
         <div class="avatar-placeholder doc">[Placeholder: Doutor]</div>
+        <div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Sim, existe. Em 2024, a tuberculose foi a doença infeciosa que mais matou no mundo, a par com o VIH. Não é história — é o presente.</div><div class="bubble-stat">1,23 milhões de mortes em 2024</div></div>
       </div>
     </div>
 
     <!-- MITO 2 -->
-    <div class="mito-pair" id="mp2">
-      <div class="mito-num">2</div>
+    <div class="mito-pair"><div class="mito-num">2</div>
       <div class="bubble-row">
+        <div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Essa cicatriz no braço? Claramente algo correu mal com a vacina."</div></div>
         <div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div>
-        <div class="bubble mito-bubble">
-          <div class="mito-tag">🙄 Mito</div>
-          <div class="bubble-text">"Essa cicatriz no braço? Claramente algo correu mal com a vacina."</div>
-        </div>
       </div>
-      <div class="bubble-row right">
-        <div class="bubble facto-bubble">
-          <div class="facto-tag">✅ Facto</div>
-          <div class="bubble-text">Não correu mal — correu exatamente como devia. A cicatriz é a resposta inflamatória local do sistema imunitário. É o sinal de que a BCG funcionou.</div>
-        </div>
+      <div class="bubble-row doctor">
         <div class="avatar-placeholder doc">[Placeholder: Doutor]</div>
+        <div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Não correu mal — correu exatamente como devia. A cicatriz é a resposta inflamatória local do sistema imunitário. É o sinal de que a BCG funcionou.</div></div>
       </div>
     </div>
 
     <!-- MITO 3 -->
-    <div class="mito-pair" id="mp3">
-      <div class="mito-num">3</div>
+    <div class="mito-pair"><div class="mito-num">3</div>
       <div class="bubble-row">
+        <div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Fiz a BCG em bebé, por isso sou imune para o resto da vida. Próximo."</div></div>
         <div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div>
-        <div class="bubble mito-bubble">
-          <div class="mito-tag">🙄 Mito</div>
-          <div class="bubble-text">"Fiz a BCG em bebé, por isso sou imune para o resto da vida. Próximo."</div>
-        </div>
       </div>
-      <div class="bubble-row right">
-        <div class="bubble facto-bubble">
-          <div class="facto-tag">✅ Facto</div>
-          <div class="bubble-text">A BCG não impede completamente a infeção. Reduz o risco de formas graves — tuberculose miliar e meníngea — com eficácia de 70 a 80%. Em adultos, a proteção contra tuberculose pulmonar é variável.</div>
-        </div>
+      <div class="bubble-row doctor">
         <div class="avatar-placeholder doc">[Placeholder: Doutor]</div>
+        <div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">A BCG não impede completamente a infeção. Reduz o risco de formas graves — tuberculose miliar e meníngea — com eficácia de 70 a 80%. Em adultos, a proteção contra tuberculose pulmonar é variável.</div></div>
       </div>
     </div>
 
     <!-- MITO 4 -->
-    <div class="mito-pair" id="mp4">
-      <div class="mito-num">4</div>
+    <div class="mito-pair"><div class="mito-num">4</div>
       <div class="bubble-row">
+        <div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"A TB é só para quem vive na pobreza. Eu estou bem, não é comigo."</div></div>
         <div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div>
-        <div class="bubble mito-bubble">
-          <div class="mito-tag">🙄 Mito</div>
-          <div class="bubble-text">"A TB é só para quem vive na pobreza. Eu estou bem, não é comigo."</div>
-        </div>
       </div>
-      <div class="bubble-row right">
-        <div class="bubble facto-bubble">
-          <div class="facto-tag">✅ Facto</div>
-          <div class="bubble-text">O Mycobacterium tuberculosis não lê o teu extrato bancário. Os grupos de risco incluem diabéticos, fumadores, pessoas com VIH e qualquer pessoa com imunossupressão.</div>
-        </div>
+      <div class="bubble-row doctor">
         <div class="avatar-placeholder doc">[Placeholder: Doutor]</div>
+        <div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">O Mycobacterium tuberculosis não lê o teu extrato bancário. Os grupos de risco incluem diabéticos, fumadores, pessoas com VIH e qualquer pessoa com imunossupressão.</div></div>
       </div>
     </div>
 
     <!-- MITO 5 -->
-    <div class="mito-pair" id="mp5">
-      <div class="mito-num">5</div>
+    <div class="mito-pair"><div class="mito-num">5</div>
       <div class="bubble-row">
+        <div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Tomas uns antibióticos uma semana e ficas bom. É igual a uma constipação."</div></div>
         <div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div>
-        <div class="bubble mito-bubble">
-          <div class="mito-tag">🙄 Mito</div>
-          <div class="bubble-text">"Tomas uns antibióticos uma semana e ficas bom. É igual a uma constipação."</div>
-        </div>
       </div>
-      <div class="bubble-row right">
-        <div class="bubble facto-bubble">
-          <div class="facto-tag">✅ Facto</div>
-          <div class="bubble-text">O tratamento exige antibióticos todos os dias durante 4 a 6 meses. Se parares a meio, podes desenvolver MDR-TB — tuberculose multirresistente. E aí as opções são muito, muito limitadas.</div>
-          <div class="bubble-stat">Só 2 em 5 doentes MDR-TB recebe tratamento eficaz</div>
-        </div>
+      <div class="bubble-row doctor">
         <div class="avatar-placeholder doc">[Placeholder: Doutor]</div>
+        <div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">O tratamento exige antibióticos todos os dias durante 4 a 6 meses. Se parares a meio, podes desenvolver MDR-TB — tuberculose multirresistente. Aí as opções ficam muito, muito limitadas.</div><div class="bubble-stat">Só 2 em 5 doentes MDR-TB recebe tratamento eficaz</div></div>
       </div>
     </div>
 
     <!-- MITO 6 -->
-    <div class="mito-pair" id="mp6">
-      <div class="mito-num">6</div>
+    <div class="mito-pair"><div class="mito-num">6</div>
       <div class="bubble-row">
+        <div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Estou em Portugal, aqui não há tuberculose. Isso é coisa de outros países."</div></div>
         <div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div>
-        <div class="bubble mito-bubble">
-          <div class="mito-tag">🙄 Mito</div>
-          <div class="bubble-text">"Estou em Portugal, aqui não há tuberculose. Isso é coisa de outros países."</div>
-        </div>
       </div>
-      <div class="bubble-row right">
-        <div class="bubble facto-bubble">
-          <div class="facto-tag">✅ Facto</div>
-          <div class="bubble-text">Portugal retirou a BCG do Programa Nacional de Vacinação em 2016, mas manteve a vacinação para grupos de risco. Baixa incidência não significa risco zero.</div>
-        </div>
+      <div class="bubble-row doctor">
         <div class="avatar-placeholder doc">[Placeholder: Doutor]</div>
+        <div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Portugal retirou a BCG do Programa Nacional de Vacinação em 2016, mas manteve a vacinação para grupos de risco. Baixa incidência não significa risco zero.</div></div>
       </div>
     </div>
 
     <!-- MITO 7 -->
-    <div class="mito-pair" id="mp7">
-      <div class="mito-num">7</div>
+    <div class="mito-pair"><div class="mito-num">7</div>
       <div class="bubble-row">
+        <div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"A vacina BCG é nova e experimental. Não confio."</div></div>
         <div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div>
-        <div class="bubble mito-bubble">
-          <div class="mito-tag">🙄 Mito</div>
-          <div class="bubble-text">"A vacina BCG é nova e experimental. Não confio."</div>
-        </div>
       </div>
-      <div class="bubble-row right">
-        <div class="bubble facto-bubble">
-          <div class="facto-tag">✅ Facto</div>
-          <div class="bubble-text">A BCG foi desenvolvida em 1908 e administrada pela primeira vez em 1921. São mais de 100 anos de história clínica, administrada a mais de 80% dos recém-nascidos nos países com plano nacional de vacinação.</div>
-        </div>
+      <div class="bubble-row doctor">
         <div class="avatar-placeholder doc">[Placeholder: Doutor]</div>
+        <div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">A BCG foi desenvolvida em 1908 e administrada pela primeira vez em 1921. São mais de 100 anos de história clínica, administrada a mais de 80% dos recém-nascidos nos países com plano nacional de vacinação.</div></div>
       </div>
     </div>
 
     <!-- MITO 8 -->
-    <div class="mito-pair" id="mp8">
-      <div class="mito-num">8</div>
+    <div class="mito-pair"><div class="mito-num">8</div>
       <div class="bubble-row">
+        <div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Se tiver tuberculose, vou saber logo. Os sintomas são óbvios."</div></div>
         <div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div>
-        <div class="bubble mito-bubble">
-          <div class="mito-tag">🙄 Mito</div>
-          <div class="bubble-text">"Se tiver tuberculose, vou saber logo. Os sintomas são óbvios."</div>
-        </div>
       </div>
-      <div class="bubble-row right">
-        <div class="bubble facto-bubble">
-          <div class="facto-tag">✅ Facto</div>
-          <div class="bubble-text">Existe a infeção latente: tens a bactéria, não tens sintomas, não sabes, e não transmites. Mas se o sistema imunitário enfraquecer, a infeção ativa-se. A TB pode estar silenciosa durante anos.</div>
-        </div>
+      <div class="bubble-row doctor">
         <div class="avatar-placeholder doc">[Placeholder: Doutor]</div>
+        <div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Existe a infeção latente: tens a bactéria, não tens sintomas, não sabes, e não transmites. Mas se o sistema imunitário enfraquecer, a infeção ativa-se. A TB pode estar silenciosa durante anos.</div></div>
       </div>
     </div>
 
-    <!-- MITO 9 -->
-    <div class="mito-pair" id="mp9">
-      <div class="mito-num">9</div>
+    <!-- MITO 9 — REFORMULADO -->
+    <div class="mito-pair"><div class="mito-num">9</div>
       <div class="bubble-row">
+        <div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Tuberculose e VIH? São duas doenças completamente diferentes. Não têm nada a ver uma com a outra."</div></div>
         <div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div>
-        <div class="bubble mito-bubble">
-          <div class="mito-tag">🙄 Mito</div>
-          <div class="bubble-text">"Tens VIH? Pelo menos não te tens de preocupar com tuberculose por cima."</div>
-        </div>
       </div>
-      <div class="bubble-row right">
-        <div class="bubble facto-bubble">
-          <div class="facto-tag">✅ Facto</div>
-          <div class="bubble-text">A tuberculose é a principal causa de morte em pessoas com VIH. Quem tem VIH tem risco 12 vezes superior de contrair TB. As duas doenças aceleram mutuamente a progressão uma da outra.</div>
-          <div class="bubble-stat">Risco 12× superior em pessoas com VIH</div>
-        </div>
+      <div class="bubble-row doctor">
         <div class="avatar-placeholder doc">[Placeholder: Doutor]</div>
+        <div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Têm tudo a ver. A tuberculose é a principal causa de morte em pessoas com VIH. Quem tem VIH tem risco 12 vezes superior de contrair TB. As duas doenças aceleram mutuamente a progressão uma da outra.</div><div class="bubble-stat">Risco 12× superior em pessoas com VIH</div></div>
       </div>
     </div>
 
     <!-- MITO 10 -->
-    <div class="mito-pair" id="mp10">
-      <div class="mito-num">10</div>
+    <div class="mito-pair"><div class="mito-num">10</div>
       <div class="bubble-row">
+        <div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"83 milhões de vidas salvas? Isso parece exagero de campanha publicitária."</div></div>
         <div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div>
-        <div class="bubble mito-bubble">
-          <div class="mito-tag">🙄 Mito</div>
-          <div class="bubble-text">"83 milhões de vidas salvas? Isso parece exagero de campanha publicitária."</div>
-        </div>
       </div>
-      <div class="bubble-row right">
-        <div class="bubble facto-bubble">
-          <div class="facto-tag">✅ Facto</div>
-          <div class="bubble-text">São os dados da Organização Mundial de Saúde — não de uma campanha. A generalização global da BCG pode prevenir mais de 115 mil mortes nos primeiros 15 anos de vida. A vacinação funciona.</div>
-          <div class="bubble-stat">83M vidas salvas desde 2000</div>
-        </div>
+      <div class="bubble-row doctor">
         <div class="avatar-placeholder doc">[Placeholder: Doutor]</div>
+        <div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">São os dados da Organização Mundial de Saúde — não de uma campanha. A generalização global da BCG pode prevenir mais de 115 mil mortes nos primeiros 15 anos de vida. A vacinação funciona.</div><div class="bubble-stat">83M vidas salvas desde 2000</div></div>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -782,7 +736,7 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
       <div class="desafio-card imig fade-up delay-3">
         <div class="desafio-icon">✈️</div>
         <h3>Imigração</h3>
-        <p>A migração de países endémicos como os da África Subsaariana e do Médio Oriente para países de baixa incidência é um dos principais fatores de persistência da doença. Os imigrantes enfrentam condições adversas de viagem, malnutrição e precariedade habitacional.</p>
+        <p>A migração de países endémicos como os da África Subsaariana e do Médio Oriente para países com baixa incidência é um dos principais fatores de persistência da doença. Os imigrantes enfrentam condições adversas de viagem, malnutrição e precariedade habitacional.</p>
       </div>
       <div class="desafio-card vih fade-up delay-4">
         <div class="desafio-icon">🔴</div>
@@ -801,30 +755,10 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
     <h2 class="section-title fade-up">Recursos</h2>
     <p class="section-sub fade-up delay-1">Para partilhar, aprofundar e usar na escola ou no trabalho.</p>
     <div class="recursos-grid">
-      <div class="recurso-card fade-up delay-1">
-        <div class="ico">📄</div>
-        <h3>Desdobráveis</h3>
-        <p>Ficheiros prontos a imprimir com os factos essenciais sobre TB e vacinação BCG.</p>
-        <div class="action">Descarregar →</div>
-      </div>
-      <div class="recurso-card fade-up delay-2">
-        <div class="ico">🎬</div>
-        <h3>Vídeos</h3>
-        <p>Explicações curtas sobre o mecanismo de ação da BCG, MDR-TB e os dados globais.</p>
-        <div class="action">Ver vídeos →</div>
-      </div>
-      <div class="recurso-card fade-up delay-3">
-        <div class="ico">📚</div>
-        <h3>Referências científicas</h3>
-        <p>OMS, NHS, The Lancet, PNV — todas as fontes utilizadas neste site, verificáveis e acessíveis.</p>
-        <div class="action">Ver fontes →</div>
-      </div>
-      <div class="recurso-card fade-up delay-4">
-        <div class="ico">🔤</div>
-        <h3>Glossário</h3>
-        <p>Todos os termos científicos explicados de forma simples, sem perder o rigor.</p>
-        <div class="action">Ver glossário →</div>
-      </div>
+      <div class="recurso-card fade-up delay-1"><div class="ico">📄</div><h3>Desdobráveis</h3><p>Ficheiros prontos a imprimir com os factos essenciais sobre TB e vacinação BCG.</p><div class="action">Descarregar →</div></div>
+      <div class="recurso-card fade-up delay-2"><div class="ico">🎬</div><h3>Vídeos</h3><p>Explicações curtas sobre o mecanismo de ação da BCG, MDR-TB e os dados globais.</p><div class="action">Ver vídeos →</div></div>
+      <div class="recurso-card fade-up delay-3"><div class="ico">📚</div><h3>Referências científicas</h3><p>OMS, NHS, The Lancet, PNV — todas as fontes utilizadas neste site, verificáveis e acessíveis.</p><div class="action">Ver fontes →</div></div>
+      <div class="recurso-card fade-up delay-4"><div class="ico">🔤</div><h3>Glossário</h3><p>Todos os termos científicos explicados de forma simples, sem perder o rigor.</p><div class="action">Ver glossário →</div></div>
     </div>
     <div class="glossario fade-up">
       <h3>Glossário rápido</h3>
@@ -833,7 +767,7 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
         <div class="glossario-item"><dt>BCG</dt><dd>Bacillus Calmette-Guérin — vacina viva atenuada contra a TB</dd></div>
         <div class="glossario-item"><dt>MDR-TB</dt><dd>Tuberculose multirresistente aos antibióticos de primeira linha</dd></div>
         <div class="glossario-item"><dt>Infeção latente</dt><dd>Infeção sem sintomas e sem transmissibilidade</dd></div>
-        <div class="glossario-item"><dt>DALYs</dt><dd>Anos de vida ajustados por incapacidade (carga de doença)</dd></div>
+        <div class="glossario-item"><dt>DALYs</dt><dd>Anos de vida ajustados por incapacidade (YLL + YLD)</dd></div>
         <div class="glossario-item"><dt>Tuberculose meníngea</dt><dd>Forma mais grave — infeta as meninges, mortalidade 30%</dd></div>
         <div class="glossario-item"><dt>Tuberculose miliar</dt><dd>Disseminação hematógena por vários órgãos</dd></div>
         <div class="glossario-item"><dt>Injeção intradérmica</dt><dd>Via de administração da BCG, na pele a 10-15 graus</dd></div>
@@ -850,240 +784,272 @@ footer .refs{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
 <section class="vacinar-section" id="vacinar">
   <h2>Quero vacinar‑me.</h2>
   <p>Aqui está o que precisas de saber para dar o próximo passo. Sem links, sem redirecionamentos — só informação.</p>
-  <div class="vacinar-box">
-    <h4>Como aceder à vacina BCG em Portugal</h4>
-    <div class="info-item"><div class="info-dot"></div><p>Em Portugal, desde 2016, a vacina BCG é administrada apenas a <strong>grupos de risco</strong> — não faz parte do PNV geral.</p></div>
-    <div class="info-item"><div class="info-dot"></div><p>Para saberes se pertences a um grupo elegível, deves <strong>consultar o teu médico de família</strong> no centro de saúde.</p></div>
-    <div class="info-item"><div class="info-dot"></div><p>Grupos de risco incluem: imigrantes provenientes de países com alta incidência de TB, filhos dessas pessoas, e outros casos identificados pelo médico.</p></div>
-    <div class="info-item"><div class="info-dot"></div><p>A vacina é administrada <strong>uma única vez</strong>, por injeção intradérmica no braço direito.</p></div>
-    <div class="info-item"><div class="info-dot"></div><p>Não deve ser administrada a grávidas, pessoas com VIH, imunodeprimidos ou quem já teve tuberculose.</p></div>
+  <div class="vacinar-inner">
+    <div class="vacinar-box">
+      <h4>Como aceder à vacina BCG em Portugal</h4>
+      <div class="info-item"><div class="info-dot"></div><p>Em 2014, Portugal registou o <strong>número mais baixo de casos de tuberculose</strong> de que há registo no país. Foi este contexto de baixa incidência que levou à decisão de, em <strong>2016</strong>, retirar a BCG do Programa Nacional de Vacinação geral.</p></div>
+      <div class="info-item"><div class="info-dot"></div><p>Desde 2016, a BCG é administrada apenas a <strong>grupos de risco</strong> — imigrantes de países com alta incidência de TB, filhos dessas pessoas, e outros casos identificados pelo médico.</p></div>
+      <div class="info-item"><div class="info-dot"></div><p>Para saberes se pertences a um grupo elegível, deves <strong>consultar o teu médico de família</strong> no centro de saúde. A avaliação de elegibilidade deve ser feita em todas as consultas.</p></div>
+      <div class="info-item"><div class="info-dot"></div><p>A vacina é administrada <strong>uma única vez</strong>. Em recém-nascidos no braço direito; a partir dos 12 meses de idade no braço esquerdo, segundo a Norma 006/2016 da DGS.</p></div>
+      <div class="info-item"><div class="info-dot"></div><p>Não deve ser administrada a grávidas, pessoas com VIH, imunodeprimidos ou quem já teve tuberculose.</p></div>
+    </div>
+    <div class="map-box">
+      <div class="map-header">
+        <h4>Centros de saúde perto de ti</h4>
+        <p>Localiza o centro de saúde mais próximo. A vacinação BCG para grupos elegíveis é feita em qualquer unidade de saúde primária do SNS.</p>
+        <div class="map-controls">
+          <button class="map-btn" onclick="locateUser()">📍 Usar a minha localização</button>
+        </div>
+        <div class="map-search-row">
+          <input class="map-search-input" id="mapSearchInput" type="text" placeholder="Pesquisar cidade ou localidade…" onkeydown="if(event.key==='Enter')searchCity()">
+          <button class="map-btn" onclick="searchCity()">Pesquisar</button>
+        </div>
+      </div>
+      <div id="vacinacaoMap"></div>
+      <div class="map-note">Mapa: OpenStreetMap © contribuidores. Os marcadores mostram unidades de saúde (hospitais e clínicas) próximas. Confirma sempre a disponibilidade de vacinação BCG antes de te deslocares. Fonte do mapa: OpenStreetMap / Overpass API.</div>
+    </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<!-- PESQUISA OVERLAY -->
-<div class="search-overlay" id="searchOverlay" onclick="closeSearchIfOutside(event)">
-  <div class="search-box" id="searchBox">
-    <div class="search-input-row">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--pink)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input class="search-input" id="searchInput" type="text" placeholder="Pesquisa no site… (ex: BCG, mitos, VIH)" oninput="doSearch()" autocomplete="off" spellcheck="false">
-      <button class="search-close" onclick="closeSearch()">✕</button>
-    </div>
-    <div class="search-results" id="searchResults">
-      <div class="search-empty"><span>🔍</span>Escreve algo para pesquisar</div>
-    </div>
-    <div class="search-hint">
-      <span>↵ selecionar</span>
-      <span>ESC fechar</span>
-      <span>Só usa informação deste site</span>
-    </div>
-  </div>
-</div>
-
 <footer>
   <p>Conteúdo baseado exclusivamente em fontes científicas verificadas.<br>Sem links externos. Sem publicidade. Só factos.</p>
-  <p class="refs">WHO Global TB Report 2025 · NHS UK · Programa Nacional de Vacinação · The Lancet Global Health · BCG World Atlas</p>
+  <p class="refs">WHO Global TB Report 2025 · NHS UK · DGS Norma 006/2016 · Programa Nacional de Vacinação · The Lancet Global Health · BCG World Atlas</p>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
+// ── MENU ─────────────────────────────────────────────────
 function toggleMenu(){
   document.getElementById('navLinks').classList.toggle('open');
 }
 
-// Intersection Observer para animações de scroll
+// ── SCROLL ANIMATIONS ────────────────────────────────────
 const observer = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{
     if(e.isIntersecting){
       e.target.classList.add('visible');
-      // barras de progresso
-      if(e.target.id==='bar1'||e.target.id==='bar2'||e.target.id==='bar3'||e.target.id==='bar4'){
-        e.target.style.width=e.target.dataset.width;
+      if(['bar1','bar2','bar3','bar4'].includes(e.target.id)){
+        e.target.style.width = e.target.dataset.width;
       }
     }
   });
 },{threshold:0.15});
-
 document.querySelectorAll('.fade-up,.fade-left,.fade-right,.mito-pair,.tl-item,.bar-fill').forEach(el=>observer.observe(el));
 
-// Nav active state
-const sections=document.querySelectorAll('section[id]');
-const navLinks=document.querySelectorAll('.nav-links a');
+// ── NAV ACTIVE ────────────────────────────────────────────
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
 window.addEventListener('scroll',()=>{
   let current='';
-  sections.forEach(s=>{
-    if(window.scrollY>=s.offsetTop-100) current=s.id;
-  });
+  sections.forEach(s=>{ if(window.scrollY>=s.offsetTop-100) current=s.id; });
   navLinks.forEach(a=>{
     a.classList.remove('active');
     if(a.getAttribute('href')==='#'+current) a.classList.add('active');
   });
 });
 
-// ── PESQUISA ──────────────────────────────────────────────
-const searchData = [
-  // O QUE É A TB
-  {title:'O que é a tuberculose',section:'o-que-e',tag:'O que é a TB',color:'pink',
-   text:'A tuberculose TB é uma doença infeciosa causada pela bactéria Mycobacterium tuberculosis também conhecida como bacilo de Koch. Afeta principalmente os pulmões tuberculose pulmonar mas pode atingir outros órgãos.'},
-  {title:'Transmissão da tuberculose',section:'o-que-e',tag:'O que é a TB',color:'pink',
-   text:'A transmissão ocorre por via aérea através de aerossóis e gotículas libertadas ao tossir espirrar ou falar. Existe infeção latente sem sintomas e sem transmissibilidade que pode ativar-se se o sistema imunitário enfraquecer.'},
-  {title:'Sintomas da tuberculose',section:'o-que-e',tag:'O que é a TB',color:'pink',
-   text:'Tosse persistente por vezes com sangue hemoptóica, dor torácica, febre, fadiga crónica, perda de peso não intencional, fraqueza generalizada e sudorese noturna.'},
-  {title:'Grupos de risco',section:'o-que-e',tag:'O que é a TB',color:'pink',
-   text:'Bebés e crianças, diabéticos, pessoas com VIH SIDA, imunossuprimidos, malnutrição, fumadores e consumidores de álcool têm maior risco de desenvolver tuberculose ativa.'},
-  {title:'Tuberculose miliar',section:'o-que-e',tag:'O que é a TB',color:'pink',
-   text:'Tuberculose miliar é a disseminação hematógena da bactéria por vários órgãos como pulmões fígado e baço provocando a formação de nódulos lesões sólidas com dimensão superior a 1 cm.'},
-  {title:'Tuberculose meníngea',section:'o-que-e',tag:'O que é a TB',color:'pink',
-   text:'Tuberculose meníngea é a variante mais grave, infeta as membranas cerebrais meninges com taxa de mortalidade de 30%.'},
-  // VACINA BCG
-  {title:'O que é a vacina BCG',section:'vacina',tag:'A vacina BCG',color:'blue',
-   text:'A BCG Bacillus Calmette-Guérin é uma vacina viva atenuada produzida a partir de Mycobacterium bovis enfraquecido. É administrada em mais de 80% dos recém-nascidos nos países com plano nacional de vacinação.'},
-  {title:'História da BCG',section:'vacina',tag:'A vacina BCG',color:'blue',
-   text:'Desenvolvida em 1908 pelos investigadores franceses Albert Calmette e Camille Guérin após 13 anos de trabalho e 200 passagens laboratoriais. A primeira administração ocorreu em 1921 em França num recém-nascido.'},
-  {title:'Como funciona a BCG',section:'vacina',tag:'A vacina BCG',color:'blue',
-   text:'A vacina é administrada por injeção intradérmica a 10-15 graus no braço direito. As bactérias atenuadas são fagocitadas por macrófagos que ativam linfócitos T. Alguns diferenciam-se em células de memória para imunidade a longo prazo.'},
-  {title:'Eficácia da BCG',section:'vacina',tag:'A vacina BCG',color:'blue',
-   text:'A eficácia da BCG contra formas graves tuberculose miliar e meníngea é de 70 a 80%. Contra tuberculose pulmonar em adultos a eficácia é variável dependendo de fatores genéticos e exposição prévia a micobactérias.'},
-  {title:'Cicatriz da BCG',section:'vacina',tag:'A vacina BCG',color:'blue',
-   text:'A cicatriz permanente no braço é uma resposta inflamatória local esperada e desejável. É o sinal de que o sistema imunitário respondeu adequadamente à vacina BCG. Não significa que a vacina correu mal.'},
-  {title:'Contraindicações da BCG',section:'vacina',tag:'A vacina BCG',color:'blue',
-   text:'Não deve ser administrada a grávidas, pessoas com VIH, imunossuprimidos, quem faz quimioterapia, quem já teve tuberculose, ou bebés cuja mãe tomou imunossupressores na gravidez.'},
-  {title:'Portugal e a BCG',section:'vacina',tag:'A vacina BCG',color:'blue',
-   text:'Em Portugal a BCG fez parte do Programa Nacional de Vacinação PNV até 2016. Atualmente é administrada apenas a grupos de risco como imigrantes de países endémicos e os seus filhos.'},
-  {title:'Novas vacinas contra a tuberculose',section:'vacina',tag:'A vacina BCG',color:'blue',
-   text:'M72 AS01E é uma vacina subunitária que usa proteínas de Mycobacterium tuberculosis. VPM1002 e MTBVAC são candidatos em fases avançadas de investigação clínica com potencial para substituir ou complementar a BCG.'},
-  // NÚMEROS
-  {title:'DALYs evitados pela vacinação BCG',section:'numeros',tag:'Números',color:'pink',
-   text:'Desde 2000 com 80% de cobertura vacinal foram evitados aproximadamente 3 mil milhões de DALYs. Cálculo: 83 milhões de vidas salvas multiplicado por 30 anos equals 2,49 mil milhões de YLL. Somando 20% de YLD equals 0,50 mil milhões. Total 2,99 mil milhões de anos de vida saudável ganhos.'},
-  {title:'O que são DALYs — definição',section:'numeros',tag:'Números',color:'pink',
-   text:'DALYs Disability-Adjusted Life Years medem o impacto total de uma doença numa população. São a soma de YLL anos de vida perdidos por morte prematura e YLD anos vividos com incapacidade. Permitem comparar doenças e definir prioridades em saúde pública.'},
-  {title:'Mortes por tuberculose em 2024',section:'numeros',tag:'Números',color:'pink',
-   text:'Em 2024 a tuberculose foi a doença infeciosa com maior mortalidade global a par com o VIH com 1,23 milhões de mortes estimadas nesse ano pela Organização Mundial de Saúde.'},
-  {title:'Vidas salvas pela luta contra a TB',section:'numeros',tag:'Números',color:'pink',
-   text:'Desde o ano 2000 foram salvas 83 milhões de vidas em resultado dos esforços globais para combater a tuberculose incluindo vacinação e tratamento.'},
-  {title:'DALYs — carga de doença',section:'numeros',tag:'Números',color:'pink',
-   text:'Foram estimados 122 milhões de DALYs Disability-Adjusted Life Years anos de vida ajustados por incapacidade em 2019. Destes 64 milhões por doença ativa e 58 milhões por sequelas pós-tuberculose como doenças pulmonares crónicas.'},
-  {title:'Cobertura vacinal BCG mundial',section:'numeros',tag:'Números',color:'pink',
-   text:'Em 2024 a cobertura vacinal mundial com BCG era de 88%. Houve uma quebra em 2020 e 2021 devido à pandemia de COVID-19 mas registou-se recuperação nos anos seguintes.'},
-  {title:'MDR-TB tratamento',section:'numeros',tag:'Números',color:'pink',
-   text:'Apenas 2 em cada 5 doentes com MDR-TB tuberculose multirresistente recebe tratamento eficaz. Os restantes não têm acesso a opções terapêuticas adequadas.'},
-  // MITOS
-  {title:'Mito: A tuberculose já foi erradicada',section:'mitos',tag:'Mitos e Factos',color:'pink',
-   text:'Facto: A tuberculose é a doença infeciosa com maior mortalidade global em 2024 a par com o VIH com 1,23 milhões de mortes. Não foi erradicada.'},
-  {title:'Mito: A cicatriz da BCG significa que correu mal',section:'mitos',tag:'Mitos e Factos',color:'pink',
-   text:'Facto: A cicatriz é uma resposta inflamatória local esperada indicando que o sistema imunitário respondeu corretamente à vacina. É sinal de imunização bem-sucedida.'},
-  {title:'Mito: Quem fez BCG não pode ter tuberculose',section:'mitos',tag:'Mitos e Factos',color:'pink',
-   text:'Facto: A BCG não impede completamente a infeção por Mycobacterium tuberculosis. Reduz o risco de progressão para formas graves com eficácia de 70 a 80%. Em adultos a proteção contra tuberculose pulmonar é variável.'},
-  {title:'Mito: A TB só afeta pessoas pobres',section:'mitos',tag:'Mitos e Factos',color:'pink',
-   text:'Facto: A tuberculose pode afetar qualquer pessoa independentemente do estatuto socioeconómico. Os grupos de risco incluem diabéticos fumadores pessoas com VIH e imunodeprimidos.'},
-  {title:'Mito: A tuberculose trata-se facilmente',section:'mitos',tag:'Mitos e Factos',color:'pink',
-   text:'Facto: O tratamento exige antibióticos todos os dias durante 4 a 6 meses. A interrupção prematura pode gerar MDR-TB tuberculose multirresistente com opções muito limitadas.'},
-  {title:'Mito: Em Portugal não há risco de tuberculose',section:'mitos',tag:'Mitos e Factos',color:'pink',
-   text:'Facto: Portugal retirou a BCG do PNV em 2016 mas mantém vacinação para grupos de risco. A prevalência persiste em grupos vulneráveis e o risco de importação não é nulo.'},
-  // DESAFIOS
-  {title:'MDR-TB — tuberculose multirresistente',section:'desafios',tag:'Desafios',color:'blue',
-   text:'MDR-TB é tuberculose resistente aos antibióticos de primeira linha causada pela interrupção prematura do tratamento prescrição inadequada ou medicamentos de baixa qualidade. Só 2 em 5 doentes recebe tratamento eficaz.'},
-  {title:'Desigualdades globais e tuberculose',section:'desafios',tag:'Desafios',color:'blue',
-   text:'Mais de 80% dos casos e mortes por tuberculose ocorrem em países de baixo e médio rendimento com infraestruturas limitadas e acesso difícil ao diagnóstico. Os custos excedem a capacidade de 50% dos doentes.'},
-  {title:'Imigração e tuberculose',section:'desafios',tag:'Desafios',color:'blue',
-   text:'A migração de países endémicos como África Subsaariana e Médio Oriente para países com baixa incidência é um dos principais fatores de persistência da doença. Imigrantes enfrentam condições adversas de viagem malnutrição e precariedade.'},
-  {title:'Coinfecção VIH e tuberculose',section:'desafios',tag:'Desafios',color:'blue',
-   text:'A tuberculose é a principal causa de morte em pessoas com VIH. Pessoas com VIH têm risco 12 vezes superior de contrair tuberculose. As duas doenças aceleram mutuamente a progressão.'},
-  // GLOSSÁRIO
-  {title:'Glossário: Mycobacterium tuberculosis',section:'recursos',tag:'Recursos',color:'blue',
-   text:'Bactéria causadora da tuberculose também conhecida como bacilo de Koch. É transmitida por via aérea.'},
-  {title:'Glossário: DALYs',section:'recursos',tag:'Recursos',color:'blue',
-   text:'Disability-Adjusted Life Years — anos de vida ajustados por incapacidade. Métrica usada para medir a carga global de doença.'},
-  {title:'Glossário: Infeção latente',section:'recursos',tag:'Recursos',color:'blue',
-   text:'Infeção por Mycobacterium tuberculosis sem sintomas e sem transmissibilidade. Pode ativar-se se o sistema imunitário enfraquecer.'},
-  {title:'Glossário: Liofilização',section:'recursos',tag:'Recursos',color:'blue',
-   text:'Processo de remoção de água por congelamento e sublimação usado para conservar e armazenar a vacina BCG por longos períodos.'},
-  {title:'Glossário: Macrófago e Linfócito T',section:'recursos',tag:'Recursos',color:'blue',
-   text:'Macrófago é a célula do sistema imunitário que fagocita as bactérias da vacina. Linfócito T coordena a resposta imunitária e diferencia-se em células de memória.'},
+// ── ASSISTIVETOUCH DRAGGABLE SEARCH ──────────────────────
+const btn = document.getElementById('assistiveSearch');
+let isDragging=false, startX, startY, startLeft, startTop;
+let relX=null, relY=null; // posição relativa ao viewport (0–1)
+
+function getPoint(e){ return e.touches ? e.touches[0] : e; }
+
+// Guarda posição como proporção do viewport
+function saveRelPos(){
+  const r=btn.getBoundingClientRect();
+  relX=r.left/window.innerWidth;
+  relY=r.top/window.innerHeight;
+}
+
+// Reaplica posição proporcional e garante que fica dentro dos limites
+function clampToViewport(){
+  if(relX===null){
+    // ainda não foi arrastado: inicializa a partir da posição CSS actual
+    const r=btn.getBoundingClientRect();
+    relX=r.left/window.innerWidth;
+    relY=r.top/window.innerHeight;
+  }
+  const sz=btn.offsetWidth||54;
+  const vw=window.innerWidth, vh=window.innerHeight;
+  const left=Math.max(8, Math.min(vw-sz-8, relX*vw));
+  const top =Math.max(8, Math.min(vh-sz-8, relY*vh));
+  btn.style.left=left+'px'; btn.style.top=top+'px';
+  btn.style.right='auto';   btn.style.bottom='auto';
+  relX=left/vw; relY=top/vh; // actualiza após clamp
+}
+
+// Compensa o zoom visual para manter o tamanho visual constante
+function compensateZoom(){
+  if(!window.visualViewport) return;
+  const s=1/window.visualViewport.scale;
+  btn.style.transform=`scale(${s})`;
+}
+
+window.addEventListener('resize', ()=>{ clampToViewport(); compensateZoom(); });
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize', ()=>{ clampToViewport(); compensateZoom(); });
+  window.visualViewport.addEventListener('scroll', clampToViewport);
+}
+
+btn.addEventListener('mousedown', startDrag);
+btn.addEventListener('touchstart', startDrag, {passive:false});
+
+function startDrag(e){
+  e.preventDefault();
+  isDragging=false;
+  const p=getPoint(e);
+  startX=p.clientX; startY=p.clientY;
+  const r=btn.getBoundingClientRect();
+  startLeft=r.left; startTop=r.top;
+  document.addEventListener('mousemove', onDrag);
+  document.addEventListener('touchmove', onDrag, {passive:false});
+  document.addEventListener('mouseup', endDrag);
+  document.addEventListener('touchend', endDrag);
+}
+
+function onDrag(e){
+  const p=getPoint(e);
+  const dx=p.clientX-startX, dy=p.clientY-startY;
+  if(Math.abs(dx)>5||Math.abs(dy)>5) isDragging=true;
+  if(!isDragging) return;
+  const sz=btn.offsetWidth||54;
+  const newL=Math.max(8, Math.min(window.innerWidth-sz-8,  startLeft+dx));
+  const newT=Math.max(8, Math.min(window.innerHeight-sz-8, startTop+dy));
+  btn.style.left=newL+'px'; btn.style.top=newT+'px';
+  btn.style.right='auto'; btn.style.bottom='auto';
+}
+
+function endDrag(){
+  document.removeEventListener('mousemove', onDrag);
+  document.removeEventListener('touchmove', onDrag);
+  document.removeEventListener('mouseup', endDrag);
+  document.removeEventListener('touchend', endDrag);
+  if(!isDragging) openSearch();
+  else saveRelPos(); // guarda posição relativa só após arrastar
+  isDragging=false;
+}
+
+// ── SEARCH ───────────────────────────────────────────────
+const searchData=[
+  {title:'O que é a tuberculose',section:'o-que-e',tag:'O que é a TB',color:'pink',text:'A tuberculose TB é uma doença infeciosa causada pela bactéria Mycobacterium tuberculosis bacilo de Koch. Afeta principalmente os pulmões tuberculose pulmonar mas pode atingir outros órgãos.'},
+  {title:'Transmissão da tuberculose',section:'o-que-e',tag:'O que é a TB',color:'pink',text:'A transmissão ocorre por via aérea através de aerossóis e gotículas ao tossir espirrar ou falar. Existe infeção latente sem sintomas e sem transmissibilidade.'},
+  {title:'Sintomas da tuberculose',section:'o-que-e',tag:'O que é a TB',color:'pink',text:'Tosse persistente hemoptóica com sangue, dor torácica, febre, fadiga crónica, perda de peso, fraqueza e sudorese noturna.'},
+  {title:'Grupos de risco',section:'o-que-e',tag:'O que é a TB',color:'pink',text:'Bebés e crianças, diabéticos, pessoas com VIH SIDA, imunossuprimidos, malnutrição, fumadores e consumidores de álcool.'},
+  {title:'Tuberculose miliar',section:'o-que-e',tag:'O que é a TB',color:'pink',text:'Disseminação hematógena da bactéria por vários órgãos como pulmões fígado e baço provocando nódulos lesões sólidas superiores a 1 cm.'},
+  {title:'Tuberculose meníngea',section:'o-que-e',tag:'O que é a TB',color:'pink',text:'Variante mais grave, infeta as membranas cerebrais meninges com taxa de mortalidade de 30%.'},
+  {title:'O que é a vacina BCG',section:'vacina',tag:'A vacina BCG',color:'blue',text:'BCG Bacillus Calmette-Guérin é uma vacina viva atenuada produzida a partir de Mycobacterium bovis enfraquecido. Administrada em mais de 80% dos recém-nascidos nos países com PNV.'},
+  {title:'História da BCG',section:'vacina',tag:'A vacina BCG',color:'blue',text:'Desenvolvida em 1908 por Albert Calmette e Camille Guérin após 13 anos e 200 passagens laboratoriais. Primeira administração em 1921 em França.'},
+  {title:'Como funciona a BCG',section:'vacina',tag:'A vacina BCG',color:'blue',text:'Administrada por injeção intradérmica. Bactérias atenuadas são fagocitadas por macrófagos que ativam linfócitos T. Diferenciação em células de memória para imunidade a longo prazo.'},
+  {title:'Eficácia da BCG',section:'vacina',tag:'A vacina BCG',color:'blue',text:'Eficácia contra formas graves tuberculose miliar e meníngea é de 70 a 80%. Em adultos a proteção contra tuberculose pulmonar é variável.'},
+  {title:'Cicatriz da BCG',section:'vacina',tag:'A vacina BCG',color:'blue',text:'A cicatriz permanente é a resposta inflamatória local esperada. Sinal de que o sistema imunitário respondeu adequadamente. Não significa que a vacina correu mal.'},
+  {title:'Portugal e a BCG',section:'vacina',tag:'A vacina BCG',color:'blue',text:'Em 2014 Portugal registou o menor número de casos de tuberculose de que há registo. Em 2016 a BCG foi retirada do PNV geral passando a administrar-se apenas a grupos de risco.'},
+  {title:'Novas vacinas TB',section:'vacina',tag:'A vacina BCG',color:'blue',text:'M72 AS01E vacina subunitária com proteínas de Mycobacterium tuberculosis. VPM1002 e MTBVAC em investigação clínica avançada.'},
+  {title:'DALYs evitados pela vacinação',section:'numeros',tag:'Números',color:'pink',text:'Desde 2000 foram evitados 3 mil milhões de DALYs. 83M vidas vezes 30 anos equals 2,49 mil milhões de YLL mais 20% YLD equals 0,50 mil milhões. Total 2,99 mil milhões de anos saudáveis.'},
+  {title:'O que são DALYs',section:'numeros',tag:'Números',color:'pink',text:'DALYs Disability-Adjusted Life Years soma de YLL anos perdidos por morte prematura e YLD anos vividos com incapacidade. Permitem comparar doenças e definir prioridades em saúde pública.'},
+  {title:'Mortes por TB em 2024',section:'numeros',tag:'Números',color:'pink',text:'Em 2024 tuberculose foi a doença infeciosa com maior mortalidade global a par com VIH com 1,23 milhões de mortes segundo a OMS.'},
+  {title:'Vidas salvas desde 2000',section:'numeros',tag:'Números',color:'pink',text:'Desde 2000 foram salvas 83 milhões de vidas em resultado dos esforços globais contra a tuberculose.'},
+  {title:'MDR-TB tratamento',section:'numeros',tag:'Números',color:'pink',text:'Apenas 2 em cada 5 doentes com MDR-TB tuberculose multirresistente recebe tratamento eficaz.'},
+  {title:'Mito: TB foi erradicada',section:'mitos',tag:'Mitos e Factos',color:'pink',text:'Facto: A tuberculose é a doença infeciosa com maior mortalidade global em 2024 com 1,23 milhões de mortes. Não foi erradicada.'},
+  {title:'Mito: Cicatriz BCG correu mal',section:'mitos',tag:'Mitos e Factos',color:'pink',text:'Facto: A cicatriz é resposta inflamatória local esperada indicando que a vacina funcionou. É sinal de imunização bem-sucedida.'},
+  {title:'Mito: BCG imune para sempre',section:'mitos',tag:'Mitos e Factos',color:'pink',text:'Facto: A BCG não impede completamente a infeção. Reduz risco de formas graves com eficácia 70 a 80%. Em adultos proteção é variável.'},
+  {title:'Mito: TB só afeta pobres',section:'mitos',tag:'Mitos e Factos',color:'pink',text:'Facto: Pode afetar qualquer pessoa. Grupos de risco incluem diabéticos fumadores pessoas com VIH e imunodeprimidos.'},
+  {title:'Mito: TB trata-se facilmente',section:'mitos',tag:'Mitos e Factos',color:'pink',text:'Facto: Tratamento exige antibióticos diários 4 a 6 meses. Interrupção gera MDR-TB multirresistente com opções muito limitadas.'},
+  {title:'Mito: Em Portugal não há TB',section:'mitos',tag:'Mitos e Factos',color:'pink',text:'Facto: Portugal retirou BCG do PNV em 2016 mas mantém vacinação para grupos de risco. Risco de importação e transmissão não é nulo.'},
+  {title:'Mito: VIH e TB não têm relação',section:'mitos',tag:'Mitos e Factos',color:'pink',text:'Facto: A tuberculose é a principal causa de morte em pessoas com VIH. Risco 12 vezes superior. As duas doenças aceleram mutuamente a progressão.'},
+  {title:'MDR-TB tuberculose multirresistente',section:'desafios',tag:'Desafios',color:'blue',text:'Resistente aos antibióticos de primeira linha causada por interrupção prematura do tratamento. Apenas 2 em 5 doentes recebe tratamento eficaz.'},
+  {title:'Desigualdades globais TB',section:'desafios',tag:'Desafios',color:'blue',text:'Mais de 80% dos casos e mortes em países de baixo e médio rendimento. Custos excedem capacidade de 50% dos doentes.'},
+  {title:'Imigração e tuberculose',section:'desafios',tag:'Desafios',color:'blue',text:'Migração de países endémicos África Subsaariana Médio Oriente para países de baixa incidência é fator de persistência.'},
+  {title:'Coinfecção VIH TB',section:'desafios',tag:'Desafios',color:'blue',text:'TB é principal causa de morte em pessoas com VIH. Risco 12 vezes superior. As duas doenças aceleram mutuamente a progressão.'},
 ];
 
-function normalizeStr(str){
-  return str.toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/[^a-z0-9\s]/g,' ');
-}
-
-function highlight(text, query){
-  const words = query.trim().split(/\s+/).filter(Boolean);
-  let result = text;
-  words.forEach(w=>{
-    const norm = normalizeStr(w);
-    const re = new RegExp(`(${norm})`, 'gi');
-    result = result.replace(re, '<mark>$1</mark>');
-  });
-  return result;
-}
-
-function getSnippet(text, query, len=120){
-  const norm = normalizeStr(text);
-  const q = normalizeStr(query);
-  const words = q.split(/\s+/).filter(Boolean);
-  let idx = -1;
-  for(const w of words){
-    idx = norm.indexOf(w);
-    if(idx !== -1) break;
-  }
-  const start = Math.max(0, idx - 30);
-  let snippet = text.substring(start, start + len);
-  if(start > 0) snippet = '…' + snippet;
-  if(start + len < text.length) snippet += '…';
-  return highlight(snippet, query);
-}
+function normalizeStr(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9\s]/g,' ');}
+function highlight(text,q){const words=q.trim().split(/\s+/).filter(Boolean);let r=text;words.forEach(w=>{const re=new RegExp('('+normalizeStr(w)+')','gi');r=r.replace(re,'<mark>$1</mark>');});return r;}
+function getSnippet(text,q,len=120){const norm=normalizeStr(text),nq=normalizeStr(q),words=nq.split(/\s+/).filter(Boolean);let idx=-1;for(const w of words){idx=norm.indexOf(w);if(idx!==-1)break;}const s=Math.max(0,idx-30);let snip=text.substring(s,s+len);if(s>0)snip='…'+snip;if(s+len<text.length)snip+='…';return highlight(snip,q);}
 
 function doSearch(){
-  const q = document.getElementById('searchInput').value.trim();
-  const out = document.getElementById('searchResults');
-  if(q.length < 2){
-    out.innerHTML='<div class="search-empty"><span>🔍</span>Escreve algo para pesquisar</div>';
-    return;
-  }
-  const norm = normalizeStr(q);
-  const words = norm.split(/\s+/).filter(Boolean);
-  const scored = searchData.map(item=>{
-    const haystack = normalizeStr(item.title + ' ' + item.text);
-    let score = 0;
-    words.forEach(w=>{
-      if(normalizeStr(item.title).includes(w)) score += 10;
-      const count = (haystack.match(new RegExp(w,'g'))||[]).length;
-      score += count * 2;
-    });
-    return {...item, score};
+  const q=document.getElementById('searchInput').value.trim();
+  const out=document.getElementById('searchResults');
+  if(q.length<2){out.innerHTML='<div class="search-empty"><span>🔍</span>Escreve algo para pesquisar</div>';return;}
+  const norm=normalizeStr(q),words=norm.split(/\s+/).filter(Boolean);
+  const scored=searchData.map(item=>{
+    const h=normalizeStr(item.title+' '+item.text);let score=0;
+    words.forEach(w=>{if(normalizeStr(item.title).includes(w))score+=10;score+=(h.match(new RegExp(w,'g'))||[]).length*2;});
+    return{...item,score};
   }).filter(i=>i.score>0).sort((a,b)=>b.score-a.score).slice(0,7);
+  if(!scored.length){out.innerHTML='<div class="search-empty"><span>😕</span>Nenhum resultado para "'+q+'"</div>';return;}
+  out.innerHTML=scored.map(item=>`<a class="result-item" href="#${item.section}" onclick="closeSearch()"><span class="result-tag ${item.color}">${item.tag}</span><div><div class="result-title">${highlight(item.title,q)}</div><div class="result-snippet">${getSnippet(item.text,q)}</div></div></a>`).join('');
+}
 
-  if(!scored.length){
-    out.innerHTML='<div class="search-empty"><span>😕</span>Nenhum resultado para "'+q+'"</div>';
-    return;
+function openSearch(){document.getElementById('searchOverlay').classList.add('open');setTimeout(()=>document.getElementById('searchInput').focus(),80);}
+function closeSearch(){document.getElementById('searchOverlay').classList.remove('open');document.getElementById('searchInput').value='';document.getElementById('searchResults').innerHTML='<div class="search-empty"><span>🔍</span>Escreve algo para pesquisar</div>';}
+function closeSearchIfOutside(e){if(e.target===document.getElementById('searchOverlay'))closeSearch();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSearch();if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openSearch();}});
+
+// ── MAPA ─────────────────────────────────────────────────
+let map, mapInit=false;
+function initMap(lat, lng, zoom){
+  if(!mapInit){
+    map = L.map('vacinacaoMap').setView([lat,lng], zoom);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contribuidores',
+      maxZoom:18
+    }).addTo(map);
+    mapInit=true;
+  } else {
+    map.setView([lat,lng], zoom);
   }
-  out.innerHTML = scored.map(item=>`
-    <a class="result-item" href="#${item.section}" onclick="closeSearch()">
-      <span class="result-tag ${item.color}">${item.tag}</span>
-      <div>
-        <div class="result-title">${highlight(item.title, q)}</div>
-        <div class="result-snippet">${getSnippet(item.text, q)}</div>
-      </div>
-    </a>
-  `).join('');
 }
 
-function openSearch(){
-  document.getElementById('searchOverlay').classList.add('open');
-  setTimeout(()=>document.getElementById('searchInput').focus(),80);
+function locateUser(){
+  if(!navigator.geolocation){alert('O teu browser não suporta geolocalização.');return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const{latitude:lat,longitude:lng}=pos.coords;
+    initMap(lat,lng,14);
+    L.circleMarker([lat,lng],{radius:10,fillColor:'#f63c67',color:'#fff',weight:3,fillOpacity:1})
+      .addTo(map).bindPopup('<strong>A tua localização</strong>').openPopup();
+    queryHealthCenters(lat,lng);
+  },()=>alert('Não foi possível obter a localização. Tenta pesquisar pela tua cidade.'));
 }
-function closeSearch(){
-  document.getElementById('searchOverlay').classList.remove('open');
-  document.getElementById('searchInput').value='';
-  document.getElementById('searchResults').innerHTML='<div class="search-empty"><span>🔍</span>Escreve algo para pesquisar</div>';
+
+function searchCity(){
+  const q=document.getElementById('mapSearchInput').value.trim();
+  if(!q)return;
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q+', Portugal')}&limit=1`)
+    .then(r=>r.json())
+    .then(data=>{
+      if(!data.length){alert('Localidade não encontrada. Tenta ser mais específico.');return;}
+      const{lat,lon}=data[0];
+      initMap(parseFloat(lat),parseFloat(lon),13);
+      queryHealthCenters(parseFloat(lat),parseFloat(lon));
+    });
 }
-function closeSearchIfOutside(e){
-  if(e.target===document.getElementById('searchOverlay')) closeSearch();
+
+function queryHealthCenters(lat,lng){
+  const r=6000;
+  const q=`[out:json][timeout:20];(node["amenity"="clinic"](around:${r},${lat},${lng});node["amenity"="hospital"](around:${r},${lat},${lng});node["healthcare"="centre"](around:${r},${lat},${lng});way["amenity"="clinic"](around:${r},${lat},${lng});way["amenity"="hospital"](around:${r},${lat},${lng}););out center;`;
+  fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(q)}`)
+    .then(r=>r.json())
+    .then(data=>{
+      const icon=L.divIcon({className:'',html:`<div style="background:#0ab1ff;width:32px;height:32px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,.2)">🏥</div>`,iconSize:[32,32],iconAnchor:[16,16]});
+      data.elements.forEach(el=>{
+        const elat=el.lat||el.center?.lat, elng=el.lon||el.center?.lon;
+        if(!elat||!elng)return;
+        const name=el.tags?.name||'Unidade de Saúde';
+        const type=el.tags?.amenity==='hospital'?'Hospital':'Clínica / Centro de Saúde';
+        L.marker([elat,elng],{icon}).addTo(map)
+          .bindPopup(`<strong>${name}</strong><br><small>${type}</small><br><small style="color:#888">Confirma disponibilidade de BCG antes de te deslocares.</small>`);
+      });
+      if(!data.elements.length){
+        L.popup().setLatLng([lat,lng]).setContent('<strong>Sem resultados próximos.</strong><br>Tenta aumentar a área de pesquisa.').openOn(map);
+      }
+    })
+    .catch(()=>{console.warn('Overpass API indisponível.');});
 }
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape') closeSearch();
-  if((e.ctrlKey||e.metaKey)&&e.key==='k'){ e.preventDefault(); openSearch(); }
+
+// Inicializa mapa centrado em Portugal ao carregar a página
+window.addEventListener('load',()=>{
+  initMap(39.5,-8.0,7);
 });
 </script>
 </body>
