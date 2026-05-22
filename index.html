@@ -418,7 +418,7 @@ footer .refs{font-size:var(--text-xs);color:rgba(255,255,255,.4);margin-top:12px
     <span class="section-tag pink">Aba 1</span>
     <h2 class="section-title fade-up">O que é a tuberculose?</h2>
     <p class="section-sub fade-up delay-1">Não é uma doença de museu. É uma <strong>bactéria real</strong>, transmitida pelo ar, que ainda hoje causa mais mortes do que quase tudo o resto.</p>
-    <div class="what-grid">
+    <div class="what-grid" style="align-items:end">
       <div class="what-card fade-up delay-1">
         <div class="what-icon">🦠</div>
         <h3>Agente etiológico</h3>
@@ -429,19 +429,21 @@ footer .refs{font-size:var(--text-xs);color:rgba(255,255,255,.4);margin-top:12px
         <h3>Transmissão</h3>
         <p>Exclusivamente por <strong>via aérea</strong>, através de aerossóis e gotículas ao tossir, falar ou espirrar. Existe também <strong>infeção latente</strong><sup class="gref" data-gterm="05">5</sup>: tens a bactéria, sem sintomas, sem transmitires — mas pode ativar-se se o sistema imunitário enfraquecer.</p>
       </div>
-      <div class="what-card fade-up delay-3" style="position:relative;overflow:visible;padding-top:80px;margin-top:60px">
-        <img src="img/doentado.png" alt="Personagem com sintomas" style="position:absolute;top:-60px;right:18px;width:90px;mix-blend-mode:multiply;pointer-events:none;z-index:2">
-        <div class="what-icon">🌡️</div>
-        <h3>Sintomas</h3>
-        <p>O quadro clínico da tuberculose ativa inclui:</p>
-        <div class="symptom-row">
-          <span class="pill">Tosse persistente</span>
-          <span class="pill">Hemoptise</span>
-          <span class="pill">Febre</span>
-          <span class="pill">Sudorese noturna</span>
-          <span class="pill">Perda de peso</span>
-          <span class="pill">Fadiga crónica</span>
-          <span class="pill">Dor torácica</span>
+      <div class="fade-up delay-3" style="display:flex;flex-direction:column">
+        <img src="img/doentado.png" alt="Personagem com sintomas" style="width:100%;display:block;mix-blend-mode:multiply;pointer-events:none">
+        <div class="what-card" style="flex:1;margin-top:0;border-top-left-radius:0;border-top-right-radius:0">
+          <div class="what-icon">🌡️</div>
+          <h3>Sintomas</h3>
+          <p>O quadro clínico da tuberculose ativa inclui:</p>
+          <div class="symptom-row">
+            <span class="pill">Tosse persistente</span>
+            <span class="pill">Hemoptise</span>
+            <span class="pill">Febre</span>
+            <span class="pill">Sudorese noturna</span>
+            <span class="pill">Perda de peso</span>
+            <span class="pill">Fadiga crónica</span>
+            <span class="pill">Dor torácica</span>
+          </div>
         </div>
       </div>
     </div>
