@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TB — A verdade que ninguém te conta</title>
+<title>InfoTuberculose</title>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700;800;900&family=Work+Sans:wght@400;500;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
@@ -40,12 +40,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(252,252,252,
 .hamburger span{display:block;width:22px;height:2px;background:var(--taupe);border-radius:2px;transition:all .2s}
 
 /* ── ASSISTIVE SEARCH BUTTON ── */
-.assistive-search{position:fixed;width:58px;height:58px;border-radius:50%;background:rgba(246,60,103,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:grab;z-index:1000;box-shadow:0 4px 20px rgba(246,60,103,.45);touch-action:none;user-select:none;right:24px;bottom:90px;transition:box-shadow .2s;transform-origin:center center}
+.assistive-search{position:fixed;width:68px;height:68px;border-radius:50%;background:rgba(246,60,103,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:grab;z-index:1000;box-shadow:0 4px 20px rgba(246,60,103,.45);touch-action:none;user-select:none;right:24px;bottom:90px;transition:box-shadow .2s;transform-origin:center center}
 .assistive-search:hover{box-shadow:0 6px 28px rgba(246,60,103,.6)}
 .assistive-search:active{cursor:grabbing}
-.assistive-search svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
-@media(max-width:768px){.assistive-search{width:52px;height:52px;right:16px;bottom:80px}}
-@media(min-width:1440px){.assistive-search{width:62px;height:62px}}
+.assistive-search svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+@media(max-width:768px){.assistive-search{width:58px;height:58px;right:16px;bottom:80px}}
+@media(min-width:1440px){.assistive-search{width:74px;height:74px}}
 
 /* ── SEARCH OVERLAY ── */
 .search-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(93,87,107,.5);backdrop-filter:blur(6px);padding:80px 20px 20px;align-items:flex-start;justify-content:center}
@@ -245,6 +245,12 @@ section{padding:88px 5vw;position:relative}
 .ref-card::-webkit-scrollbar-track{background:transparent}
 .ref-card::-webkit-scrollbar-thumb{background:rgba(93,87,107,.2);border-radius:4px}
 
+
+/* GIF AVATARS */
+.avatar-img{flex-shrink:0;width:56px;height:56px;border-radius:12px;object-fit:cover;object-position:top center;display:block}
+.avatar-img.genz{border:2.5px solid var(--pink)}
+.avatar-img.doc{border:2.5px solid var(--blue)}
+
 /* INLINE GLOSSARY REFS — Wikipedia style */
 .gref{color:var(--blue);cursor:pointer;font-size:11px;font-weight:800;vertical-align:super;margin-left:1px;background:var(--blue-light);padding:1px 4px;border-radius:3px;text-decoration:none;line-height:1;white-space:nowrap;transition:background .15s,color .15s}
 .gref:hover{background:var(--blue);color:#fff}
@@ -347,7 +353,7 @@ footer .refs{font-size:var(--text-xs);color:rgba(255,255,255,.4);margin-top:12px
 <div class="gref-tooltip" id="grefTooltip"></div>
 <nav>
   <div class="nav-inner">
-    <div class="logo">TB<span>verdade</span></div>
+    <div class="logo">Info<span>Tuberculose</span></div>
     <ul class="nav-links" id="navLinks">
       <li><a href="#o-que-e" class="active">O que é</a></li>
       <li><a href="#vacina">A vacina</a></li>
@@ -416,7 +422,7 @@ footer .refs{font-size:var(--text-xs);color:rgba(255,255,255,.4);margin-top:12px
       <div class="what-card fade-up delay-1">
         <div class="what-icon">🦠</div>
         <h3>Agente etiológico</h3>
-        <p>Causada pela bactéria <strong>Mycobacterium tuberculosis</strong><sup class="gref" data-gterm="01">1</sup> (bacilo de Koch). Afeta principalmente os pulmões — <strong>tuberculose pulmonar</strong><sup class="gref" data-gterm="06">6</sup> — mas pode atingir outros órgãos como os rins, ossos e cérebro.</p>
+        <p>Causada pela bactéria <strong><em>Mycobacterium tuberculosis</em></strong><sup class="gref" data-gterm="01">1</sup> (bacilo de Koch). Afeta principalmente os pulmões — <strong>tuberculose pulmonar</strong><sup class="gref" data-gterm="06">6</sup> — mas pode atingir outros órgãos como os rins, ossos e cérebro.</p>
       </div>
       <div class="what-card fade-up delay-2">
         <div class="what-icon">💨</div>
@@ -424,10 +430,12 @@ footer .refs{font-size:var(--text-xs);color:rgba(255,255,255,.4);margin-top:12px
         <p>Exclusivamente por <strong>via aérea</strong>, através de aerossóis e gotículas ao tossir, falar ou espirrar. Existe também <strong>infeção latente</strong><sup class="gref" data-gterm="05">5</sup>: tens a bactéria, sem sintomas, sem transmitires — mas pode ativar-se se o sistema imunitário enfraquecer.</p>
       </div>
       <div class="what-card fade-up delay-3">
-        <div class="what-icon">🌡️</div>
-        <h3>Sintomas</h3>
-        <p>O quadro clínico da tuberculose ativa inclui:</p>
-        <div class="symptom-row">
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div style="flex:1">
+            <div class="what-icon">🌡️</div>
+            <h3>Sintomas</h3>
+            <p>O quadro clínico da tuberculose ativa inclui:</p>
+            <div class="symptom-row">
           <span class="pill">Tosse persistente</span>
           <span class="pill">Hemoptise</span>
           <span class="pill">Febre</span>
@@ -435,6 +443,9 @@ footer .refs{font-size:var(--text-xs);color:rgba(255,255,255,.4);margin-top:12px
           <span class="pill">Perda de peso</span>
           <span class="pill">Fadiga crónica</span>
           <span class="pill">Dor torácica</span>
+            </div>
+          </div>
+          <img src="Img/doentado.png" alt="Personagem com sintomas" style="width:80px;flex-shrink:0;margin-top:4px;mix-blend-mode:multiply;border-radius:8px">
         </div>
       </div>
     </div>
@@ -556,44 +567,44 @@ footer .refs{font-size:var(--text-xs);color:rgba(255,255,255,.4);margin-top:12px
       <p class="section-sub fade-up delay-1" style="margin:0 auto">O que a internet diz vs. o que a ciência prova. Spoiler: <strong>a ciência ganha sempre</strong>.</p>
     </div>
     <div class="mito-pair"><div class="mito-num">1</div>
-      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"A tuberculose? Isso era uma doença do século XIX. Já não existe, não é?"</div></div><div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div></div>
-      <div class="bubble-row doctor"><div class="avatar-placeholder doc">[Placeholder: Doutor]</div><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Sim, existe. Em 2026, a tuberculose foi a <strong>doença infeciosa que mais matou no mundo</strong>, a par com o VIH. Não é história — é o presente.</div><div class="bubble-stat">1,23 milhões de mortes em 2026</div></div></div>
+      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"A tuberculose? Isso era uma doença do século XIX. Já não existe, não é?"</div></div><img src="Img/Boy_1.gif" alt="Personagem Z" class="avatar-img genz"></div>
+      <div class="bubble-row doctor"><img src="Img/Tuberculose.gif" alt="Resposta" class="avatar-img doc"><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Sim, existe. Em 2026, a tuberculose foi a <strong>doença infeciosa que mais matou no mundo</strong>, a par com o VIH. Não é história — é o presente.</div><div class="bubble-stat">1,23 milhões de mortes em 2026</div></div></div>
     </div>
     <div class="mito-pair"><div class="mito-num">2</div>
-      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Essa cicatriz no braço? Claramente algo correu mal com a vacina."</div></div><div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div></div>
-      <div class="bubble-row doctor"><div class="avatar-placeholder doc">[Placeholder: Doutor]</div><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Não correu mal — correu <strong>exatamente como devia</strong>. A cicatriz é a resposta inflamatória local do sistema imunitário. É o sinal de que a BCG funcionou.</div></div></div>
+      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Essa cicatriz no braço? Claramente algo correu mal com a vacina."</div></div><img src="Img/Girl_1.gif" alt="Personagem Z" class="avatar-img genz"></div>
+      <div class="bubble-row doctor"><img src="Img/Medico.gif" alt="Resposta" class="avatar-img doc"><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Não correu mal — correu <strong>exatamente como devia</strong>. A cicatriz é a resposta inflamatória local do sistema imunitário. É o sinal de que a BCG funcionou.</div></div></div>
     </div>
     <div class="mito-pair"><div class="mito-num">3</div>
-      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Fiz a BCG em bebé, por isso sou imune para o resto da vida. Próximo."</div></div><div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div></div>
-      <div class="bubble-row doctor"><div class="avatar-placeholder doc">[Placeholder: Doutor]</div><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">A BCG <strong>não impede completamente</strong> a infeção. Reduz o risco de formas graves com eficácia de <strong>70 a 80%</strong>. Em adultos, a proteção contra tuberculose pulmonar é variável.</div></div></div>
+      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Fiz a BCG em bebé, por isso sou imune para o resto da vida. Próximo."</div></div><img src="Img/Alterna.gif" alt="Personagem Z" class="avatar-img genz"></div>
+      <div class="bubble-row doctor"><img src="Img/Medico.gif" alt="Resposta" class="avatar-img doc"><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">A BCG <strong>não impede completamente</strong> a infeção. Reduz o risco de formas graves com eficácia de <strong>70 a 80%</strong>. Em adultos, a proteção contra tuberculose pulmonar é variável.</div></div></div>
     </div>
     <div class="mito-pair"><div class="mito-num">4</div>
-      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"A TB é só para quem vive na pobreza. Eu estou bem, não é comigo."</div></div><div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div></div>
-      <div class="bubble-row doctor"><div class="avatar-placeholder doc">[Placeholder: Doutor]</div><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">O <strong>Mycobacterium tuberculosis</strong> não lê o teu extrato bancário. Os grupos de risco incluem <strong>diabéticos, fumadores, pessoas com VIH</strong> e qualquer pessoa com imunossupressão.</div></div></div>
+      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"A TB é só para quem vive na pobreza. Eu estou bem, não é comigo."</div></div><img src="Img/Boy_1.gif" alt="Personagem Z" class="avatar-img genz"></div>
+      <div class="bubble-row doctor"><img src="Img/Medico.gif" alt="Resposta" class="avatar-img doc"><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">O <strong><em>Mycobacterium tuberculosis</em></strong> não lê o teu extrato bancário. Os grupos de risco incluem <strong>diabéticos, fumadores, pessoas com VIH</strong> e qualquer pessoa com imunossupressão.</div></div></div>
     </div>
     <div class="mito-pair"><div class="mito-num">5</div>
-      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Tomas uns antibióticos uma semana e ficas bom. É igual a uma constipação."</div></div><div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div></div>
-      <div class="bubble-row doctor"><div class="avatar-placeholder doc">[Placeholder: Doutor]</div><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">O tratamento exige antibióticos <strong>todos os dias durante 4 a 6 meses</strong>. Se parares a meio, podes desenvolver <strong>MDR-TB</strong> — tuberculose multirresistente. Aí as opções ficam muito, muito limitadas.</div><div class="bubble-stat">Só 2 em 5 doentes MDR-TB tratados eficazmente</div></div></div>
+      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Tomas uns antibióticos uma semana e ficas bom. É igual a uma constipação."</div></div><img src="Img/Girl_1.gif" alt="Personagem Z" class="avatar-img genz"></div>
+      <div class="bubble-row doctor"><img src="Img/Tuberculose.gif" alt="Resposta" class="avatar-img doc"><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">O tratamento exige antibióticos <strong>todos os dias durante 4 a 6 meses</strong>. Se parares a meio, podes desenvolver <strong>MDR-TB</strong> — tuberculose multirresistente. Aí as opções ficam muito, muito limitadas.</div><div class="bubble-stat">Só 2 em 5 doentes MDR-TB tratados eficazmente</div></div></div>
     </div>
     <div class="mito-pair"><div class="mito-num">6</div>
-      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Estou em Portugal, aqui não há tuberculose. Isso é coisa de outros países."</div></div><div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div></div>
-      <div class="bubble-row doctor"><div class="avatar-placeholder doc">[Placeholder: Doutor]</div><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Portugal retirou a BCG do <strong>Programa Nacional de Vacinação em 2016</strong>, mas manteve para grupos de risco. <strong>Baixa incidência não significa risco zero.</strong></div></div></div>
+      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Estou em Portugal, aqui não há tuberculose. Isso é coisa de outros países."</div></div><img src="Img/Alterna.gif" alt="Personagem Z" class="avatar-img genz"></div>
+      <div class="bubble-row doctor"><img src="Img/Medico.gif" alt="Resposta" class="avatar-img doc"><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Portugal retirou a BCG do <strong>Programa Nacional de Vacinação em 2016</strong>, mas manteve para grupos de risco. <strong>Baixa incidência não significa risco zero.</strong></div></div></div>
     </div>
     <div class="mito-pair"><div class="mito-num">7</div>
-      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"A vacina BCG é nova e experimental. Não confio."</div></div><div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div></div>
-      <div class="bubble-row doctor"><div class="avatar-placeholder doc">[Placeholder: Doutor]</div><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">A BCG foi desenvolvida em <strong>1908</strong> e administrada pela primeira vez em <strong>1921</strong>. São mais de 100 anos de história clínica, administrada a mais de <strong>80% dos recém-nascidos</strong> nos países com PNV.</div></div></div>
+      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"A vacina BCG é nova e experimental. Não confio."</div></div><img src="Img/Boy_1.gif" alt="Personagem Z" class="avatar-img genz"></div>
+      <div class="bubble-row doctor"><img src="Img/Medico.gif" alt="Resposta" class="avatar-img doc"><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">A BCG foi desenvolvida em <strong>1908</strong> e administrada pela primeira vez em <strong>1921</strong>. São mais de 100 anos de história clínica, administrada a mais de <strong>80% dos recém-nascidos</strong> nos países com PNV.</div></div></div>
     </div>
     <div class="mito-pair"><div class="mito-num">8</div>
-      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Se tiver tuberculose, vou saber logo. Os sintomas são óbvios."</div></div><div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div></div>
-      <div class="bubble-row doctor"><div class="avatar-placeholder doc">[Placeholder: Doutor]</div><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Existe a <strong>infeção latente</strong>: tens a bactéria, não tens sintomas, não sabes, e não transmites. Mas se o sistema imunitário enfraquecer, a infeção <strong>ativa-se silenciosamente</strong>.</div></div></div>
+      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Se tiver tuberculose, vou saber logo. Os sintomas são óbvios."</div></div><img src="Img/Girl_1.gif" alt="Personagem Z" class="avatar-img genz"></div>
+      <div class="bubble-row doctor"><img src="Img/Tuberculose.gif" alt="Resposta" class="avatar-img doc"><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Existe a <strong>infeção latente</strong>: tens a bactéria, não tens sintomas, não sabes, e não transmites. Mas se o sistema imunitário enfraquecer, a infeção <strong>ativa-se silenciosamente</strong>.</div></div></div>
     </div>
     <div class="mito-pair"><div class="mito-num">9</div>
-      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Tuberculose e VIH? São duas doenças completamente diferentes. Não têm nada a ver uma com a outra."</div></div><div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div></div>
-      <div class="bubble-row doctor"><div class="avatar-placeholder doc">[Placeholder: Doutor]</div><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Têm <strong>tudo a ver</strong>. A tuberculose é a <strong>principal causa de morte em pessoas com VIH</strong>. Quem tem VIH tem risco <strong>12 vezes superior</strong> de contrair TB.</div><div class="bubble-stat">Risco 12× superior em pessoas com VIH</div></div></div>
+      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"Tuberculose e VIH? São duas doenças completamente diferentes. Não têm nada a ver uma com a outra."</div></div><img src="Img/Alterna.gif" alt="Personagem Z" class="avatar-img genz"></div>
+      <div class="bubble-row doctor"><img src="Img/Medico.gif" alt="Resposta" class="avatar-img doc"><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">Têm <strong>tudo a ver</strong>. A tuberculose é a <strong>principal causa de morte em pessoas com VIH</strong>. Quem tem VIH tem risco <strong>12 vezes superior</strong> de contrair TB.</div><div class="bubble-stat">Risco 12× superior em pessoas com VIH</div></div></div>
     </div>
     <div class="mito-pair"><div class="mito-num">10</div>
-      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"83 milhões de vidas salvas? Isso parece exagero de campanha publicitária."</div></div><div class="avatar-placeholder genz">[Placeholder: Personagem Z]</div></div>
-      <div class="bubble-row doctor"><div class="avatar-placeholder doc">[Placeholder: Doutor]</div><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">São os dados da <strong>Organização Mundial de Saúde</strong> — não de uma campanha. A BCG pode prevenir mais de <strong>115 mil mortes</strong> nos primeiros 15 anos de vida. A vacinação funciona.</div><div class="bubble-stat">83M vidas salvas desde 2000</div></div></div>
+      <div class="bubble-row"><div class="bubble mito-bubble"><div class="mito-tag">🙄 Mito</div><div class="bubble-text">"83 milhões de vidas salvas? Isso parece exagero de campanha publicitária."</div></div><img src="Img/Boy_1.gif" alt="Personagem Z" class="avatar-img genz"></div>
+      <div class="bubble-row doctor"><img src="Img/Medico.gif" alt="Resposta" class="avatar-img doc"><div class="bubble facto-bubble"><div class="facto-tag">✅ Facto</div><div class="bubble-text">São os dados da <strong>Organização Mundial de Saúde</strong> — não de uma campanha. A BCG pode prevenir mais de <strong>115 mil mortes</strong> nos primeiros 15 anos de vida. A vacinação funciona.</div><div class="bubble-stat">83M vidas salvas desde 2000</div></div></div>
     </div>
   </div>
 </section>
@@ -626,7 +637,10 @@ footer .refs{font-size:var(--text-xs);color:rgba(255,255,255,.4);margin-top:12px
         <h3>📱 Vídeo &amp; Reels</h3>
         <p>Conteúdo curto e partilhável sobre tuberculose, vacinação e mitos — formatado para <strong>TikTok, Reels e YouTube Shorts</strong>.</p>
         <div class="reel-mockup">
-          <div class="reel-notch"></div>
+          <video autoplay loop muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:20px;z-index:0">
+          <source src="videos/Tuberculose.mp4" type="video/mp4">
+        </video>
+        <div class="reel-notch"></div>
           <div class="reel-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
           <div class="reel-label">
             <p><strong>TB — A verdade que ninguém te conta</strong></p>
@@ -637,7 +651,7 @@ footer .refs{font-size:var(--text-xs);color:rgba(255,255,255,.4);margin-top:12px
             <div class="reel-action">💬<span>340</span></div>
             <div class="reel-action">↗️<span>Partilhar</span></div>
           </div>
-          <div class="placeholder-note">[Placeholder: Inserir vídeo ou reel aqui]</div>
+          <div class="placeholder-note">▶ videos/Tuberculose.mp4</div>
         </div>
       </div>
 
@@ -664,55 +678,55 @@ footer .refs{font-size:var(--text-xs);color:rgba(255,255,255,.4);margin-top:12px
       </div>
       <dl class="glossario-grid">
 
-        <div class="g-item" id="gterm-01"><span class="g-num">01</span><dt>Mycobacterium tuberculosis</dt><dd>Bactéria causadora da tuberculose (bacilo de Koch)</dd><div class="g-expand">Pertence ao grupo das micobactérias. Cresce lentamente e tem uma parede celular rica em lípidos que a torna resistente a muitos antibióticos comuns. Transmite-se exclusivamente por via aérea.</div><span class="g-tag">Microbiologia</span></div>
+        <div class="g-item" id="gterm-01"><span class="g-num">01</span><dt><em>Mycobacterium tuberculosis</em></dt><dd>Bactéria causadora da tuberculose (bacilo de Koch).</dd><div class="g-expand">Pertence ao grupo das micobactérias. Cresce lentamente e tem uma parede celular rica em lípidos que a torna resistente a muitos antibióticos comuns. Transmite-se exclusivamente por via aérea.</div><span class="g-tag">Microbiologia</span></div>
 
-        <div class="g-item" id="gterm-02"><span class="g-num">02</span><dt>Mycobacterium bovis</dt><dd>Bactéria usada na produção da vacina BCG</dd><div class="g-expand">Causa tuberculose bovina. Apresenta elevada similaridade genética com M. tuberculosis, tornando-se a base da vacina BCG após atenuação progressiva em laboratório ao longo de 13 anos.</div><span class="g-tag">Microbiologia</span></div>
+        <div class="g-item" id="gterm-02"><span class="g-num">02</span><dt><em>Mycobacterium bovis</em></dt><dd>Bactéria usada na produção da vacina BCG.</dd><div class="g-expand">Causa tuberculose bovina. Apresenta elevada similaridade genética com <em>M. tuberculosis</em>, tornando-se a base da vacina BCG após atenuação progressiva em laboratório ao longo de 13 anos.</div><span class="g-tag">Microbiologia</span></div>
 
-        <div class="g-item" id="gterm-03"><span class="g-num">03</span><dt>BCG (Bacillus Calmette-Guérin)</dt><dd>Vacina viva atenuada contra a tuberculose</dd><div class="g-expand">Desenvolvida em 1908, administrada desde 1921. Uma das vacinas mais utilizadas no mundo. Eficácia de 70–80% contra as formas graves da doença em crianças.</div><span class="g-tag">Vacinologia</span></div>
+        <div class="g-item" id="gterm-03"><span class="g-num">03</span><dt>BCG (Bacillus Calmette-Guérin)</dt><dd>Vacina viva atenuada contra a tuberculose.</dd><div class="g-expand">Desenvolvida em 1908, administrada desde 1921. Uma das vacinas mais utilizadas no mundo. Eficácia de 70–80% contra as formas graves da doença em crianças.</div><span class="g-tag">Vacinologia</span></div>
 
-        <div class="g-item" id="gterm-04"><span class="g-num">04</span><dt>Vacina viva atenuada</dt><dd>Vacina com agente patogénico enfraquecido em laboratório</dd><div class="g-expand">Contém o microrganismo vivo mas com virulência reduzida, incapaz de causar doença num sistema imunitário saudável, mas suficiente para induzir resposta imunitária duradoura.</div><span class="g-tag">Imunologia</span></div>
+        <div class="g-item" id="gterm-04"><span class="g-num">04</span><dt>Vacina viva atenuada</dt><dd>Vacina com agente patogénico enfraquecido em laboratório.</dd><div class="g-expand">Contém o microrganismo vivo mas com virulência reduzida, incapaz de causar doença num sistema imunitário saudável, mas suficiente para induzir resposta imunitária duradoura.</div><span class="g-tag">Imunologia</span></div>
 
-        <div class="g-item" id="gterm-05"><span class="g-num">05</span><dt>Infeção latente</dt><dd>Presença da bactéria sem sintomas nem transmissibilidade</dd><div class="g-expand">Estima-se que 25% da população mundial tenha infeção latente por M. tuberculosis. O risco de progressão para doença ativa é de 5–10% ao longo da vida, aumentando drasticamente em imunossuprimidos.</div><span class="g-tag">Clínica</span></div>
+        <div class="g-item" id="gterm-05"><span class="g-num">05</span><dt>Infeção latente</dt><dd>Presença da bactéria sem sintomas nem transmissibilidade.</dd><div class="g-expand">Estima-se que 25% da população mundial tenha infeção latente por <em>M. tuberculosis</em>. O risco de progressão para doença ativa é de 5–10% ao longo da vida, aumentando drasticamente em imunossuprimidos.</div><span class="g-tag">Clínica</span></div>
 
-        <div class="g-item" id="gterm-06"><span class="g-num">06</span><dt>Tuberculose pulmonar</dt><dd>Forma mais comum — afeta os pulmões</dd><div class="g-expand">Representa cerca de 85% dos casos de TB. É a única forma contagiosa da doença. Sintomas: tosse crónica, hemoptise, febre, sudorese noturna e perda de peso.</div><span class="g-tag">Clínica</span></div>
+        <div class="g-item" id="gterm-06"><span class="g-num">06</span><dt>Tuberculose pulmonar</dt><dd>Forma mais comum — afeta os pulmões.</dd><div class="g-expand">Representa cerca de 85% dos casos de TB. É a única forma contagiosa da doença. Sintomas: tosse crónica, hemoptise, febre, sudorese noturna e perda de peso.</div><span class="g-tag">Clínica</span></div>
 
-        <div class="g-item" id="gterm-07"><span class="g-num">07</span><dt>Tuberculose miliar</dt><dd>Disseminação hematógena por múltiplos órgãos</dd><div class="g-expand">Ocorre quando a bactéria entra na corrente sanguínea e se dissemina por vários órgãos, formando pequenos nódulos com aparência de milho no raio-X. É uma emergência médica com elevada mortalidade sem tratamento.</div><span class="g-tag">Clínica</span></div>
+        <div class="g-item" id="gterm-07"><span class="g-num">07</span><dt>Tuberculose miliar</dt><dd>Disseminação hematógena por múltiplos órgãos.</dd><div class="g-expand">Ocorre quando a bactéria entra na corrente sanguínea e se dissemina por vários órgãos, formando pequenos nódulos com aparência de milho no raio-X. É uma emergência médica com elevada mortalidade sem tratamento.</div><span class="g-tag">Clínica</span></div>
 
-        <div class="g-item" id="gterm-08"><span class="g-num">08</span><dt>Tuberculose meníngea</dt><dd>Forma mais grave — infeta as meninges</dd><div class="g-expand">A forma mais letal de tuberculose extrapulmonar. Infeta as membranas cerebrais (meninges). Taxa de mortalidade de 30%, com elevado risco de sequelas neurológicas permanentes nos sobreviventes.</div><span class="g-tag">Clínica</span></div>
+        <div class="g-item" id="gterm-08"><span class="g-num">08</span><dt>Tuberculose meníngea</dt><dd>Forma mais grave — infeta as meninges.</dd><div class="g-expand">A forma mais letal de tuberculose extrapulmonar. Infeta as membranas cerebrais (meninges). Taxa de mortalidade de 30%, com elevado risco de sequelas neurológicas permanentes nos sobreviventes.</div><span class="g-tag">Clínica</span></div>
 
-        <div class="g-item" id="gterm-09"><span class="g-num">09</span><dt>MDR-TB</dt><dd>Tuberculose multirresistente aos antibióticos de 1.ª linha</dd><div class="g-expand">Resistente à isoniazida e rifampicina — os dois antibióticos mais potentes. O tratamento requer fármacos de 2.ª linha, durante 18–24 meses, com mais efeitos secundários e menor taxa de sucesso.</div><span class="g-tag">Resistência</span></div>
+        <div class="g-item" id="gterm-09"><span class="g-num">09</span><dt>MDR-TB</dt><dd>Tuberculose multirresistente aos antibióticos de 1.ª linha.</dd><div class="g-expand">Resistente à isoniazida e rifampicina — os dois antibióticos mais potentes. O tratamento requer fármacos de 2.ª linha, durante 18–24 meses, com mais efeitos secundários e menor taxa de sucesso.</div><span class="g-tag">Resistência</span></div>
 
-        <div class="g-item" id="gterm-10"><span class="g-num">10</span><dt>XDR-TB</dt><dd>Tuberculose extensivamente resistente a antibióticos</dd><div class="g-expand">Forma ainda mais grave de MDR-TB, resistente também à maioria dos antibióticos de 2.ª linha. Considerada praticamente intratável em muitos contextos de baixo rendimento.</div><span class="g-tag">Resistência</span></div>
+        <div class="g-item" id="gterm-10"><span class="g-num">10</span><dt>XDR-TB</dt><dd>Tuberculose extensivamente resistente a antibióticos.</dd><div class="g-expand">Forma ainda mais grave de MDR-TB, resistente também à maioria dos antibióticos de 2.ª linha. Considerada praticamente intratável em muitos contextos de baixo rendimento.</div><span class="g-tag">Resistência</span></div>
 
-        <div class="g-item" id="gterm-11"><span class="g-num">11</span><dt>DALYs</dt><dd>Anos de vida ajustados por incapacidade (YLL + YLD)</dd><div class="g-expand">Métrica de saúde pública que combina anos de vida perdidos por morte prematura (YLL) e anos vividos com incapacidade (YLD). Permite comparar o impacto de diferentes doenças numa única unidade.</div><span class="g-tag">Epidemiologia</span></div>
+        <div class="g-item" id="gterm-11"><span class="g-num">11</span><dt>DALYs</dt><dd>Anos de vida ajustados por incapacidade (YLL + YLD).</dd><div class="g-expand">Métrica de saúde pública que combina anos de vida perdidos por morte prematura (YLL) e anos vividos com incapacidade (YLD). Permite comparar o impacto de diferentes doenças numa única unidade.</div><span class="g-tag">Epidemiologia</span></div>
 
-        <div class="g-item" id="gterm-12"><span class="g-num">12</span><dt>YLL — Years of Life Lost</dt><dd>Anos de vida perdidos por morte prematura</dd><div class="g-expand">Calculados com base na esperança de vida padrão menos a idade de morte. No contexto da TB, estimam-se 64 milhões de YLL em 2019, refletindo o impacto da mortalidade prematura da doença.</div><span class="g-tag">Epidemiologia</span></div>
+        <div class="g-item" id="gterm-12"><span class="g-num">12</span><dt>YLL — Years of Life Lost</dt><dd>Anos de vida perdidos por morte prematura.</dd><div class="g-expand">Calculados com base na esperança de vida padrão menos a idade de morte. No contexto da TB, estimam-se 64 milhões de YLL em 2019, refletindo o impacto da mortalidade prematura da doença.</div><span class="g-tag">Epidemiologia</span></div>
 
-        <div class="g-item" id="gterm-13"><span class="g-num">13</span><dt>YLD — Years Lived with Disability</dt><dd>Anos vividos com incapacidade ou sequelas</dd><div class="g-expand">Medem o tempo passado com saúde degradada por doença ou sequelas. Na TB, incluem danos pulmonares permanentes pós-infeção. Estimados em 58 milhões em 2019.</div><span class="g-tag">Epidemiologia</span></div>
+        <div class="g-item" id="gterm-13"><span class="g-num">13</span><dt>YLD — Years Lived with Disability</dt><dd>Anos vividos com incapacidade ou sequelas.</dd><div class="g-expand">Medem o tempo passado com saúde degradada por doença ou sequelas. Na TB, incluem danos pulmonares permanentes pós-infeção. Estimados em 58 milhões em 2019.</div><span class="g-tag">Epidemiologia</span></div>
 
-        <div class="g-item" id="gterm-14"><span class="g-num">14</span><dt>Injeção intradérmica</dt><dd>Via de administração da BCG na camada superficial da pele</dd><div class="g-expand">A agulha é inserida a um ângulo de 10–15 graus na face externa do braço, depositando a vacina na derme. Provoca uma pápula local que regride e origina a cicatriz característica.</div><span class="g-tag">Administração</span></div>
+        <div class="g-item" id="gterm-14"><span class="g-num">14</span><dt>Injeção intradérmica</dt><dd>Via de administração da BCG na camada superficial da pele.</dd><div class="g-expand">A agulha é inserida a um ângulo de 10–15 graus na face externa do braço, depositando a vacina na derme. Provoca uma pápula local que regride e origina a cicatriz característica.</div><span class="g-tag">Administração</span></div>
 
-        <div class="g-item" id="gterm-15"><span class="g-num">15</span><dt>Macrófago</dt><dd>Célula do sistema imunitário que fagocita as bactérias</dd><div class="g-expand">Primeira linha de defesa do sistema imunitário inato. Após fagocitar as bactérias da vacina, apresenta os antigénios na sua superfície, ativando os linfócitos T para uma resposta adaptativa.</div><span class="g-tag">Imunologia</span></div>
+        <div class="g-item" id="gterm-15"><span class="g-num">15</span><dt>Macrófago</dt><dd>Célula do sistema imunitário que fagocita as bactérias.</dd><div class="g-expand">Primeira linha de defesa do sistema imunitário inato. Após fagocitar as bactérias da vacina, apresenta os antigénios na sua superfície, ativando os linfócitos T para uma resposta adaptativa.</div><span class="g-tag">Imunologia</span></div>
 
-        <div class="g-item" id="gterm-16"><span class="g-num">16</span><dt>Linfócitos T</dt><dd>Células imunitárias que coordenam a resposta à vacina</dd><div class="g-expand">Após ativação pelos macrófagos, os linfócitos T CD4+ e CD8+ orquestram a resposta imunitária adaptativa. Uma fração diferencia-se em células de memória para proteção duradoura.</div><span class="g-tag">Imunologia</span></div>
+        <div class="g-item" id="gterm-16"><span class="g-num">16</span><dt>Linfócitos T</dt><dd>Células imunitárias que coordenam a resposta à vacina.</dd><div class="g-expand">Após ativação pelos macrófagos, os linfócitos T CD4+ e CD8+ orquestram a resposta imunitária adaptativa. Uma fração diferencia-se em células de memória para proteção duradoura.</div><span class="g-tag">Imunologia</span></div>
 
-        <div class="g-item" id="gterm-17"><span class="g-num">17</span><dt>Antigénios</dt><dd>Fragmentos que identificam um agente patogénico</dd><div class="g-expand">Moléculas (geralmente proteínas) à superfície das bactérias que o sistema imunitário reconhece como "estranhas". Na BCG, os antigénios de M. bovis atenuado treinam o sistema imunitário para reconhecer M. tuberculosis.</div><span class="g-tag">Imunologia</span></div>
+        <div class="g-item" id="gterm-17"><span class="g-num">17</span><dt>Antigénios</dt><dd>Fragmentos que identificam um agente patogénico.</dd><div class="g-expand">Moléculas (geralmente proteínas) à superfície das bactérias que o sistema imunitário reconhece como "estranhas". Na BCG, os antigénios de M. <em>bovis</em> atenuado treinam o sistema imunitário para reconhecer <em>M. tuberculosis</em>.</div><span class="g-tag">Imunologia</span></div>
 
-        <div class="g-item" id="gterm-18"><span class="g-num">18</span><dt>Liofilização</dt><dd>Remoção de água por congelamento e sublimação</dd><div class="g-expand">Processo que preserva as bactérias atenuadas da vacina, garantindo estabilidade e viabilidade durante o armazenamento e transporte. A BCG liofilizada exige sempre cadeia de frio.</div><span class="g-tag">Produção</span></div>
+        <div class="g-item" id="gterm-18"><span class="g-num">18</span><dt>Liofilização</dt><dd>Remoção de água por congelamento e sublimação.</dd><div class="g-expand">Processo que preserva as bactérias atenuadas da vacina, garantindo estabilidade e viabilidade durante o armazenamento e transporte. A BCG liofilizada exige sempre cadeia de frio.</div><span class="g-tag">Produção</span></div>
 
-        <div class="g-item" id="gterm-19"><span class="g-num">19</span><dt>Imunossupressão</dt><dd>Estado de sistema imunitário enfraquecido</dd><div class="g-expand">Pode ser causada por doenças (VIH, cancro), medicamentos (corticosteroides, quimioterapia) ou condições genéticas. Contraindica a administração de vacinas vivas como a BCG.</div><span class="g-tag">Clínica</span></div>
+        <div class="g-item" id="gterm-19"><span class="g-num">19</span><dt>Imunossupressão</dt><dd>Estado de sistema imunitário enfraquecido.</dd><div class="g-expand">Pode ser causada por doenças (VIH, cancro), medicamentos (corticosteroides, quimioterapia) ou condições genéticas. Contraindica a administração de vacinas vivas como a BCG.</div><span class="g-tag">Clínica</span></div>
 
-        <div class="g-item" id="gterm-20"><span class="g-num">20</span><dt>Hemoptise</dt><dd>Tosse com expulsão de sangue</dd><div class="g-expand">Sintoma característico da tuberculose pulmonar avançada. Resulta de lesão dos vasos sanguíneos pulmonares pelo processo inflamatório causado pela bactéria. Sinal de doença ativa.</div><span class="g-tag">Clínica</span></div>
+        <div class="g-item" id="gterm-20"><span class="g-num">20</span><dt>Hemoptise</dt><dd>Tosse com expulsão de sangue.</dd><div class="g-expand">Sintoma característico da tuberculose pulmonar avançada. Resulta de lesão dos vasos sanguíneos pulmonares pelo processo inflamatório causado pela bactéria. Sinal de doença ativa.</div><span class="g-tag">Clínica</span></div>
 
-        <div class="g-item" id="gterm-21"><span class="g-num">21</span><dt>Disseminação hematógena</dt><dd>Propagação da bactéria pela corrente sanguínea</dd><div class="g-expand">Ocorre quando M. tuberculosis consegue penetrar nos vasos sanguíneos e atingir órgãos distantes dos pulmões. É o mecanismo responsável pela tuberculose miliar e meníngea.</div><span class="g-tag">Patologia</span></div>
+        <div class="g-item" id="gterm-21"><span class="g-num">21</span><dt>Disseminação hematógena</dt><dd>Propagação da bactéria pela corrente sanguínea.</dd><div class="g-expand">Ocorre quando <em>M. tuberculosis</em> consegue penetrar nos vasos sanguíneos e atingir órgãos distantes dos pulmões. É o mecanismo responsável pela tuberculose miliar e meníngea.</div><span class="g-tag">Patologia</span></div>
 
-        <div class="g-item" id="gterm-22"><span class="g-num">22</span><dt>Programa Nacional de Vacinação (PNV)</dt><dd>Plano oficial português de imunização gratuita</dd><div class="g-expand">Coordenado pela DGS, define quais as vacinas gratuitas e obrigatórias em Portugal. A BCG integrou o PNV até 2016, sendo desde então reservada a grupos de risco.</div><span class="g-tag">Política de saúde</span></div>
+        <div class="g-item" id="gterm-22"><span class="g-num">22</span><dt>Programa Nacional de Vacinação (PNV)</dt><dd>Plano oficial português de imunização gratuita.</dd><div class="g-expand">Coordenado pela DGS, define quais as vacinas gratuitas e obrigatórias em Portugal. A BCG integrou o PNV até 2016, sendo desde então reservada a grupos de risco.</div><span class="g-tag">Política de saúde</span></div>
 
-        <div class="g-item" id="gterm-23"><span class="g-num">23</span><dt>M72/AS01E</dt><dd>Nova vacina subunitária contra TB em investigação</dd><div class="g-expand">Vacina de subunidade proteica que usa antigénios específicos de M. tuberculosis combinados com um adjuvante potente (AS01E). Em fase 2b de ensaios clínicos, com eficácia promissora em adultos.</div><span class="g-tag">Investigação</span></div>
+        <div class="g-item" id="gterm-23"><span class="g-num">23</span><dt>M72/AS01E</dt><dd>Nova vacina subunitária contra TB em investigação.</dd><div class="g-expand">Vacina de subunidade proteica que usa antigénios específicos de <em>M. tuberculosis</em> combinados com um adjuvante potente (AS01E). Em fase 2b de ensaios clínicos, com eficácia promissora em adultos.</div><span class="g-tag">Investigação</span></div>
 
-        <div class="g-item" id="gterm-24"><span class="g-num">24</span><dt>VPM1002 / MTBVAC</dt><dd>Candidatos a vacina em ensaios clínicos avançados</dd><div class="g-expand">VPM1002 é uma BCG geneticamente modificada; MTBVAC usa M. tuberculosis atenuado. Ambos em fase 3 de investigação clínica, com o objetivo de substituir ou complementar a BCG nos programas globais.</div><span class="g-tag">Investigação</span></div>
+        <div class="g-item" id="gterm-24"><span class="g-num">24</span><dt>VPM1002 / MTBVAC</dt><dd>Candidatos a vacina em ensaios clínicos avançados.</dd><div class="g-expand">VPM1002 é uma BCG geneticamente modificada; MTBVAC usa <em>M. tuberculosis</em> atenuado. Ambos em fase 3 de investigação clínica, com o objetivo de substituir ou complementar a BCG nos programas globais.</div><span class="g-tag">Investigação</span></div>
 
-        <div class="g-item" id="gterm-25"><span class="g-num">25</span><dt>Virulência</dt><dd>Capacidade de um microrganismo causar doença</dd><div class="g-expand">Na produção da BCG, a virulência de M. bovis é progressivamente reduzida ao longo de 200 passagens laboratoriais. A bactéria perde fatores de virulência por ausência de pressão seletiva imunitária, mantendo apenas a capacidade de estimular o sistema imunitário.</div><span class="g-tag">Microbiologia</span></div>
+        <div class="g-item" id="gterm-25"><span class="g-num">25</span><dt>Virulência</dt><dd>Capacidade de um microrganismo causar doença.</dd><div class="g-expand">Na produção da BCG, a virulência de M. <em>bovis</em> é progressivamente reduzida ao longo de 200 passagens laboratoriais. A bactéria perde fatores de virulência por ausência de pressão seletiva imunitária, mantendo apenas a capacidade de estimular o sistema imunitário.</div><span class="g-tag">Microbiologia</span></div>
 
       </dl>
     </div>
@@ -810,7 +824,7 @@ function endDrag(){ document.removeEventListener('mousemove',onDrag); document.r
 
 // SEARCH
 const searchData=[
-  {title:'O que é a tuberculose',section:'o-que-e',tag:'O que é a TB',color:'pink',text:'Doença infeciosa causada por Mycobacterium tuberculosis bacilo de Koch. Afeta pulmões tuberculose pulmonar mas pode atingir outros órgãos rins ossos cérebro.'},
+  {title:'O que é a tuberculose',section:'o-que-e',tag:'O que é a TB',color:'pink',text:'Doença infeciosa causada por <em>Mycobacterium tuberculosis</em> bacilo de Koch. Afeta pulmões tuberculose pulmonar mas pode atingir outros órgãos rins ossos cérebro.'},
   {title:'Transmissão e infeção latente',section:'o-que-e',tag:'O que é a TB',color:'pink',text:'Transmissão por via aérea aerossóis gotículas tosse espirros fala. Infeção latente sem sintomas sem transmissão pode ativar-se quando sistema imunitário enfraquece.'},
   {title:'Sintomas da tuberculose',section:'o-que-e',tag:'O que é a TB',color:'pink',text:'Tosse persistente hemoptise sangue febre fadiga crónica perda de peso sudorese noturna dor torácica.'},
   {title:'Grupos de risco',section:'o-que-e',tag:'O que é a TB',color:'pink',text:'Bebés crianças diabéticos pessoas com VIH imunossuprimidos malnutrição fumadores álcool.'},
@@ -821,7 +835,7 @@ const searchData=[
   {title:'Eficácia e cicatriz BCG',section:'vacina',tag:'A vacina BCG',color:'blue',text:'Eficácia 70 a 80% formas graves miliar meníngea. Em adultos tuberculose pulmonar variável. Cicatriz é resposta inflamatória esperada sinal que vacina funcionou.'},
   {title:'Contraindicações BCG',section:'vacina',tag:'A vacina BCG',color:'blue',text:'Grávidas VIH imunossuprimidos quimioterapia tuberculose ativa bebés mãe tomou imunossupressores gravidez.'},
   {title:'Portugal 2014 e 2016 PNV',section:'vacina',tag:'A vacina BCG',color:'blue',text:'Em 2014 Portugal registou menor número de casos de tuberculose. Em 2016 BCG retirada do PNV geral mantida apenas grupos de risco.'},
-  {title:'Novas vacinas M72 VPM1002 MTBVAC',section:'vacina',tag:'A vacina BCG',color:'blue',text:'M72 AS01E vacina subunitária proteínas Mycobacterium tuberculosis adultos. VPM1002 BCG modificada. MTBVAC vivo atenuado fase 3 ensaios clínicos.'},
+  {title:'Novas vacinas M72 VPM1002 MTBVAC',section:'vacina',tag:'A vacina BCG',color:'blue',text:'M72 AS01E vacina subunitária proteínas <em>Mycobacterium tuberculosis</em> adultos. VPM1002 BCG modificada. MTBVAC vivo atenuado fase 3 ensaios clínicos.'},
   {title:'Mortes e vidas salvas — dados OMS',section:'numeros',tag:'Números',color:'pink',text:'1,23 milhões mortes 2026. 83 milhões vidas salvas desde 2000. 115 mil mortes prevenidas crianças primeiros 15 anos. 88% cobertura BCG 2026.'},
   {title:'DALYs e carga de doença',section:'numeros',tag:'Números',color:'pink',text:'122 milhões DALYs 2019. YLL anos perdidos morte prematura 64 milhões. YLD sequelas incapacidade 58 milhões. Desde 2000 evitados 3 mil milhões DALYs.'},
   {title:'MDR-TB e desigualdades',section:'numeros',tag:'Números',color:'pink',text:'Apenas 2 em 5 doentes MDR-TB recebe tratamento eficaz. 80% casos mortes países baixo rendimento. Custos 50% doentes incapacidade financeira.'},
@@ -829,7 +843,7 @@ const searchData=[
   {title:'Desigualdades globais tuberculose',section:'desafios',tag:'Desafios',color:'blue',text:'80% casos mortes países baixo médio rendimento infraestruturas limitadas diagnóstico difícil custos 50% doentes.'},
   {title:'Imigração e tuberculose',section:'desafios',tag:'Desafios',color:'blue',text:'Migração África Subsaariana Médio Oriente países baixa incidência fator persistência doença. Imigrantes condições adversas malnutrição precariedade.'},
   {title:'Coinfecção VIH tuberculose',section:'desafios',tag:'Desafios',color:'blue',text:'TB principal causa morte pessoas VIH. Risco 12 vezes superior contrair tuberculose. Duas doenças aceleram mutuamente progressão.'},
-  {title:'Glossário tuberculose',section:'recursos',tag:'Recursos',color:'blue',text:'Mycobacterium tuberculosis BCG vacina atenuada infeção latente MDR-TB XDR-TB DALYs YLL YLD macrófago linfócitos antigénios liofilização imunossupressão hemoptise virulência PNV M72 VPM1002 MTBVAC.'},
+  {title:'Glossário tuberculose',section:'recursos',tag:'Recursos',color:'blue',text:'<em>Mycobacterium tuberculosis</em> BCG vacina atenuada infeção latente MDR-TB XDR-TB DALYs YLL YLD macrófago linfócitos antigénios liofilização imunossupressão hemoptise virulência PNV M72 VPM1002 MTBVAC.'},
 ];
 function normalizeStr(s){ return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9\s]/g,' '); }
 function highlight(t,q){ const ws=q.trim().split(/\s+/).filter(Boolean); ws.forEach(w=>{ t=t.replace(new RegExp('('+normalizeStr(w)+')','gi'),'<mark>$1</mark>'); }); return t; }
@@ -849,11 +863,11 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSearch(); if(
 
 // INLINE GLOSSARY REFS
 const glossData={
-  '01':{term:'Mycobacterium tuberculosis',def:'Bactéria causadora da tuberculose (bacilo de Koch). Transmite-se exclusivamente por via aérea.'},
-  '02':{term:'Mycobacterium bovis',def:'Bactéria bovina de alta similaridade genética com M. tuberculosis. Base da vacina BCG após atenuação laboratorial.'},
+  '01':{term:'<em>Mycobacterium tuberculosis</em>',def:'Bactéria causadora da tuberculose (bacilo de Koch). Transmite-se exclusivamente por via aérea.'},
+  '02':{term:'<em>Mycobacterium bovis</em>',def:'Bactéria bovina de alta similaridade genética com <em>M. tuberculosis</em>. Base da vacina BCG após atenuação laboratorial.'},
   '03':{term:'BCG (Bacillus Calmette-Guérin)',def:'Vacina viva atenuada contra a tuberculose, desenvolvida em 1908 e administrada desde 1921.'},
   '04':{term:'Vacina viva atenuada',def:'Vacina que contém o microrganismo vivo mas com virulência reduzida em laboratório.'},
-  '05':{term:'Infeção latente',def:'Presença de M. tuberculosis sem sintomas nem transmissibilidade. Pode ativar-se em imunossupressão.'},
+  '05':{term:'Infeção latente',def:'Presença de <em>M. tuberculosis</em> sem sintomas nem transmissibilidade. Pode ativar-se em imunossupressão.'},
   '06':{term:'Tuberculose pulmonar',def:'Forma mais comum — afeta os pulmões. Representa ~85% dos casos e é a única forma contagiosa.'},
   '07':{term:'Tuberculose miliar',def:'Disseminação hematógena por múltiplos órgãos com formação de nódulos. Emergência médica.'},
   '08':{term:'Tuberculose meníngea',def:'Infeta as meninges (membranas cerebrais). Mortalidade de 30%. Forma mais grave de TB.'},
@@ -871,8 +885,8 @@ const glossData={
   '20':{term:'Hemoptise',def:'Tosse com expulsão de sangue. Sintoma de tuberculose pulmonar avançada.'},
   '21':{term:'Disseminação hematógena',def:'Propagação da bactéria pela corrente sanguínea para órgãos distantes dos pulmões.'},
   '22':{term:'PNV — Programa Nacional de Vacinação',def:'Plano oficial português de imunização gratuita. A BCG integrou o PNV até 2016.'},
-  '23':{term:'M72/AS01E',def:'Vacina subunitária em fase 2b. Usa proteínas de M. tuberculosis com adjuvante AS01E.'},
-  '24':{term:'VPM1002 / MTBVAC',def:'Candidatos a vacina em fase 3. VPM1002 é BCG modificada; MTBVAC usa M. tuberculosis atenuado.'},
+  '23':{term:'M72/AS01E',def:'Vacina subunitária em fase 2b. Usa proteínas de <em>M. tuberculosis</em> com adjuvante AS01E.'},
+  '24':{term:'VPM1002 / MTBVAC',def:'Candidatos a vacina em fase 3. VPM1002 é BCG modificada; MTBVAC usa <em>M. tuberculosis</em> atenuado.'},
   '25':{term:'Virulência',def:'Capacidade de um microrganismo causar doença. Reduzida progressivamente na produção da BCG.'},
 };
 const gtt=document.getElementById('grefTooltip');
